@@ -1,6 +1,11 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const productRoutes = require("./routes/productRoutrs")
 const app = express();
+
+app.use(express.json());
+
+app.use("/api",productRoutes);
 
 app.get("/",(req,res)=>{
     res.send("root is working");
@@ -12,7 +17,7 @@ app.listen(3000,()=>{
 
 main().then(()=>{
 
-    console.log("Connected Successfully");
+    console.log("Connected to DB Successfully");
     
 }).catch((err)=>{
     console.log(err);
