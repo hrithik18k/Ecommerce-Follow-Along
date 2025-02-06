@@ -148,4 +148,4 @@ Decryption: When a user attempts to log in, the entered password is verified aga
 - Implemented form submission logic to handle input data and images.
 - Added a route to display the product form in the application.
 
-## Milestone 10
+## Milestone 10: 
