@@ -148,4 +148,7 @@ Decryption: When a user attempts to log in, the entered password is verified aga
 - Implemented form submission logic to handle input data and images.
 - Added a route to display the product form in the application.
 
-## Milestone 10: 
+## 🎯Milestone 10: 
+Schema Creation: Created a Structured Product Schema with necessary fields and data types \n Endpoint Creation: Created Enought endpoints to make operation with the Product data \n Endpoints:
+
+POST /api/addProducts GET /api/addProducts GET /api/addProducts/:id PUT /api/addProducts/:id DELETE /api/addProducts/:id
