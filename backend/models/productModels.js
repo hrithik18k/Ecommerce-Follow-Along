@@ -16,21 +16,13 @@ const productSchema = new mongoose.Schema({
         min: 0
     },
     imageUrl: {
-        type: String,
-        required: true,
-        trim: true,
-        validate: {
-            validator: function(v) {
-                return /^(http|https):\/\/[^ "]+$/.test(v);
-            },
-            message: props => `${props.value} is not a valid URL!`
-        }
+        type: [String],
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    }
-});
+    userEmail:{
+        type:String,
+    },
+    
+}, {timestamps: true});
 const Product = mongoose.model('Product', productSchema);
 
 module.exports = Product;
