@@ -40,3 +40,27 @@
 .read-the-docs {
   color: #888;
 }
+
+.card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  width: 200px;
+  background-color: #f9f9f9;
+}
+
+.card img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+.card h2 {
+  font-size: 1.5em;
+  margin: 16px 0 8px;
+}
+
+.card p {
+  font-size: 1.2em;
+  color: #333;
+}

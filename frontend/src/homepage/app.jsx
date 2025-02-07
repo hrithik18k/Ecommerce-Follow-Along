@@ -2,15 +2,25 @@ import '../App.css';
 import Card from './card';
 import ProductForm from './ProductForm';
 import { Link, Route, Routes } from 'react-router-dom';
-
-const products = [
-    { id: 1, name: 'Duck', image: 'https://images.pexels.com/photos/132464/pexels-photo-132464.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2', price: 212.99 },
-    { id: 2, name: 'Teddy', image: 'https://images.pexels.com/photos/12211/pexels-photo-12211.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2', price: 339.99 },
-    { id: 3, name: 'Animals', image: 'https://images.pexels.com/photos/1319572/pexels-photo-1319572.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2', price: 449.99 },
-    { id: 4, name: 'Rabbit', image: 'https://images.pexels.com/photos/2156261/pexels-photo-2156261.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2', price: 406.00 },
-];
+import { useEffect, useState } from 'react';
 
 function App() {
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await fetch('http://localhost:3000/api/products');
+                const data = await response.json();
+                setProducts(data);
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
+        };
+
+        fetchProducts();
+    }, []);
+
     return (
         <div>
             <nav>
@@ -27,7 +37,7 @@ function App() {
                 <Route path="/" element={
                     <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
                         {products.map(product => (
-                            <Card key={product.id} name={product.name} image={product.image} price={product.price} />
+                            <Card key={product._id} name={product.name} image={product.imageUrl} price={product.price} />
                         ))}
                     </div>
                 } />

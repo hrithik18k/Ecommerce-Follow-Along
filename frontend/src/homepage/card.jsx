@@ -11,8 +11,8 @@ function Card({ name, image, price }) {
             borderRadius: '8px' 
         }}>
             <img src={image} alt={name} style={{ width: '100%', height: 'auto', borderRadius: '8px 8px 0 0' }} />
-            <h3 style={{color:"black"}}>{name}</h3>
-            <p style={{color:"black"}}>${price.toFixed(2)}</p>
+            <h3>{name}</h3>
+            <p>${price.toFixed(2)}</p>
         </div>
     );
 }
