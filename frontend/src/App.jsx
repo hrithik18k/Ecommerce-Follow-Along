@@ -1,13 +1,19 @@
 import './App.css';
-import Login from './components/Login';
-import Homepage from './homepage/app';
-
+import  {Route, Routes, BrowserRouter} from 'react-router-dom'
+import ProductForm from './homepage/productform';
+import { useState } from 'react';
+import Home from './homepage/Home';
 function App() {
+  const [products, setProducts] = useState([])
   return (
-    <div>
-      <Login />
-      <Homepage />
-    </div>
+      
+    <BrowserRouter>
+    <Routes>
+    <Route index   element={<Home products={products}/>}/>
+    <Route path="/create" element={<ProductForm setProducts={setProducts}/>}/>
+    </Routes>
+    </BrowserRouter>
+
   );
 }
 
