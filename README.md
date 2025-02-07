@@ -149,6 +149,18 @@ Decryption: When a user attempts to log in, the entered password is verified aga
 - Added a route to display the product form in the application.
 
 ## 🎯Milestone 10: 
-Schema Creation: Created a Structured Product Schema with necessary fields and data types \n Endpoint Creation: Created Enought endpoints to make operation with the Product data \n Endpoints:
+- Schema Creation: Created a Structured Product Schema with necessary fields and data types \n Endpoint Creation: Created Enought endpoints to make operation with the Product data \n Endpoints:
 
-POST /api/addProducts GET /api/addProducts GET /api/addProducts/:id PUT /api/addProducts/:id DELETE /api/addProducts/:id
+- POST /api/addProducts GET /api/addProducts GET /api/addProducts/:id PUT /api/addProducts/:id DELETE /api/addProducts/:id
+
+
+## 🎯Milestone 11: Dynamic Home Page
+- In this milestone, we made the home page dynamic by fetching product data from MongoDB and displaying it using the product card component.
+
+#### Backend
+- Added an endpoint to fetch all products from MongoDB.
+- Updated `productControllers.js` and `productRoutrs.js` to include the new endpoint.
+
+#### Frontend
+- Updated `homepage/app.jsx` to fetch product data from the backend.
+- Displayed the fetched data dynamically using the product card component.
