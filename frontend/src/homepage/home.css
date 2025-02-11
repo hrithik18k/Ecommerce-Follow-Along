@@ -1,0 +1,34 @@
+.home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f3f3f3;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.nav-link {
+    padding: 10px 20px;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #fff;
+    background-color: #007bff;
+    transition: background-color 0.3s ease;
+}
+
+.nav-link:hover {
+    background-color: #0056b3;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+}

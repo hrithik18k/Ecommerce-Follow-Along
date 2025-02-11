@@ -3,11 +3,13 @@ const mongoose = require("mongoose");
 const productRoutes = require("./routes/productRoutrs")
 const app = express();
 const cors = require('cors')
+const userRouter = require('./routes/userRoutes')
 app.use(cors())
 app.use(express.json());
 
 app.use("/api",productRoutes);
-
+app.use('/', userRouter)
+app.use('/uploads', express.static('uploads'))
 app.get("/",(req,res)=>{
     res.send("root is working");
 });
