@@ -1,10 +1,12 @@
+import axios from 'axios';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router';
 
 const SignUp = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
+    const navigate = useNavigate()
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -15,12 +17,14 @@ const SignUp = () => {
         }
         
         const response = await fetch('http://localhost:3000/register', {
-            method: 'POST',
+            method: 'POST', 
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email, password })
+            body: JSON.stringify({ name,email, password })
         });
-
-        const data = await response.json();
+        if(response.ok){
+            navigate('/login')
+        }
+        const data = await response.json(); 
         alert(data.message);
     };
 

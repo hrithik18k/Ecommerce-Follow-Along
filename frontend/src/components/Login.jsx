@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
+    const navigate = useNavigate()
 
 const handleSubmit = async (e) => {
     e.preventDefault();
@@ -13,7 +14,10 @@ const handleSubmit = async (e) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
     });
-
+    if(response.ok){
+        localStorage.setItem("email", email)
+        navigate('/')
+    }
     const data = await response.json(); 
     alert(data.message);
 };

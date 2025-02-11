@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios'
+import { useNavigate } from 'react-router';
 function ProductForm({setProducts}) {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
     const [images, setImages] = useState([]);
-
+    const email = localStorage.getItem("email")
+    const navigate = useNavigate()
     const handleImageChange = (e) => {
         setImages([...e.target.files]);
     };
@@ -17,6 +19,7 @@ function ProductForm({setProducts}) {
         formData.append('name', name);
         formData.append('description', description);
         formData.append('price', price);
+        formData.append('userEmail',email )
         images.forEach((image) => {
             formData.append('images', image); // ✅ Correct format
         });
@@ -28,8 +31,9 @@ function ProductForm({setProducts}) {
             setProducts(response.data.product)
             if(response.data.success){
                 alert(response.data.message)
+                navigate('/')
             }
-        
+            
         } catch (error) {
             console.error('Error adding product:', error);
             alert('Error adding product');
