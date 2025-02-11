@@ -3,13 +3,14 @@ const path = require('path');
 
 const createProduct = async (req, res) => {
     try {
-        const { name, description, price } = req.body;
+        const { name, description, price, userEmail } = req.body;
         const imageUrls = req.files.map(file => path.join('uploads', file.filename));
 
         const newProduct = new Product({
             name,
             description,
             price,
+            userEmail,
             imageUrl: imageUrls,
         });
 

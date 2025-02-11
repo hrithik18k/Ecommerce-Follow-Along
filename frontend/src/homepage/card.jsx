@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Card({ name, image, price }) {
+function Card({ name, image,description, price }) {
     return (
         <div style={{ 
             border: '1px solid #ccc', 
@@ -10,9 +10,9 @@ function Card({ name, image, price }) {
             backgroundColor: '#f9f9f9', 
             borderRadius: '8px' 
         }}>
-            <img src={image} alt={name} style={{ width: '100%', height: 'auto', borderRadius: '8px 8px 0 0' }} />
+            <img src={`http://localhost:3000/${image}`} alt={name} style={{ width: '100%', height: 'auto', borderRadius: '8px 8px 0 0' }} />
             <h3>{name}</h3>
-            <p>{Description}</p>
+            <p>{description}</p>
             <p>${price.toFixed(2)}</p>
         </div>
     );
