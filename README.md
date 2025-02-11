@@ -164,3 +164,7 @@ Decryption: When a user attempts to log in, the entered password is verified aga
 #### Frontend
 - Updated `homepage/app.jsx` to fetch product data from the backend.
 - Displayed the fetched data dynamically using the product card component.
+
+## 🎯 Milestone 12 :
+-Backend: Developed an API endpoint in Node.js with Express to query and retrieve products from MongoDB, filtering them based on the authenticated user's email.
+-Frontend: Implemented a function to fetch the filtered product data and dynamically render it using the existing product card component.
