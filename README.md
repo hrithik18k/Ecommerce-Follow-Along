@@ -1,4 +1,4 @@
-# E-Commerce-Application
+# E-Commerce-Application (WAR-MART)
 
 ## Overview
 An E-Commerce application that allows users to browse products, add them to a shopping cart, and complete purchases. The app includes features for user authentication, product management, and order tracking.
@@ -177,5 +177,5 @@ Decryption: When a user attempts to log in, the entered password is verified aga
 
 ##  🎯Milestone 14
 
-**Backend**: Already create a endpoint to Delete the product.\
+**Backend**: Create a endpoint to Delete the product.\
 **Frontend**: Added Delete button on clicking the delete button it will make a delete request to `/api/products/:id` which will delete the product from the database
