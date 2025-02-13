@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import Card from "./card";
 import './home.css'; 
 
@@ -13,7 +13,7 @@ const Home = ({ products }) => {
             </div>
             <div className="products-grid">
                 {products && products.map(prod => (
-                    <Card key={prod._id} name={prod.name} image={prod.imageUrl[0]} description={prod.description} price={prod.price} />
+                    <Card key={prod._id} id={prod._id} name={prod.name} image={prod.imageUrl[0]} description={prod.description} price={prod.price} />
                 ))}
             </div>
         </div>
