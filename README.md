@@ -168,3 +168,9 @@ Decryption: When a user attempts to log in, the entered password is verified aga
 ## 🎯 Milestone 12 :
 - Backend: Developed an API endpoint in Node.js with Express to query and retrieve products from MongoDB, filtering them based on the authenticated user's email.
 - Frontend: Implemented a function to fetch the filtered product data and dynamically render it using the existing product card component.
+
+## 🎯 Milestone 13
+
+**Backend**: Already create a endpoint to update the product details.\
+**Frontend**: Added Edit button on clicking the edit button it will redirect to a form with details filled automatically using location from `react-router-dom` made a put request to PUT `/api/products/:id` this endpoint.
+**Frontend**: Added Edit button on clicking the edit button it will redirect to a form with details filled automatically using location from `react-router-dom` made a put request to PUT `/api/products/:id` this endpoint.
