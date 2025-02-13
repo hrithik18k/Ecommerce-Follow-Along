@@ -10,13 +10,13 @@ const SignUp = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Form validation (you can enhance this later)
+        // Form validation 
         if (!email || !password || !name) {
             alert('Please fill out all fields');
             return;
         }
         
-        const response = await fetch('http://localhost:3000/register', {
+        const response = await fetch('http://localhost:3001/register', {
             method: 'POST', 
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name,email, password })

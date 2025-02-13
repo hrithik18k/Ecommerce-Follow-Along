@@ -1,28 +1,66 @@
 .home-container {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
-    background-color: #f3f3f3;
+    background-image: url('/military-background.jpg');
+    border-radius: 8px;
+    overflow: hidden; 
 }
 
-.nav-links {
+.home-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: inherit;
+    background-size: cover;
+    background-position: center;
+    filter: blur(10px); 
+    z-index: -1; 
+}
+
+.navbar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.navbar-left {
+    flex: 1;
+}
+
+.web-name {
+    font-size: 54px;
+    font-weight: bold;
+    color: #000;
+}
+
+.navbar-right {
     display: flex;
     gap: 20px;
-    margin-bottom: 20px;
 }
 
 .nav-link {
     padding: 10px 20px;
     border-radius: 4px;
     text-decoration: none;
-    color: #fff;
-    background-color: #007bff;
+    color: #000;
+    background-color: #E2D7AB; 
+    border: 1px solid #000;
     transition: background-color 0.3s ease;
 }
 
 .nav-link:hover {
-    background-color: #0056b3;
+    background-color: #d1c49a; 
 }
 
 .products-grid {
@@ -31,19 +69,4 @@
     gap: 20px;
     width: 100%;
     max-width: 1200px;
-}
-.edit-button {
-    display: inline-block;
-    padding: 8px 16px;
-    margin-top: 8px;
-    border-radius: 4px;
-    background-color: #007bff;
-    color: #fff;
-    text-decoration: none;
-    text-align: center;
-    cursor: pointer;
-}
-
-.edit-button:hover {
-    background-color: #0056b3;
 }

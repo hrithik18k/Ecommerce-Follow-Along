@@ -13,8 +13,8 @@ app.use('/uploads', express.static('uploads'))
 app.get("/",(req,res)=>{
     res.send("root is working");
 });
-app.listen(3000,()=>{
-    console.log("server is running on port 3000");
+app.listen(3001,()=>{
+    console.log("server is running on port 3001");
 });
 
 
