@@ -1,42 +1,73 @@
-import React, { useState } from 'react';
-import axios from 'axios'
-import { useNavigate } from 'react-router';
-function ProductForm({setProducts}) {
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useNavigate, useParams } from 'react-router';
+
+function ProductForm({ setProducts }) {
+    const { id } = useParams();
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
     const [images, setImages] = useState([]);
-    const email = localStorage.getItem("email")
-    const navigate = useNavigate()
+    const [existingImages, setExistingImages] = useState([]);
+    const email = localStorage.getItem("email");
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (id) {
+            const fetchProduct = async () => {
+                try {
+                    const response = await axios.get(`http://localhost:3000/api/products/${id}`);
+                    const product = response.data;
+                    setName(product.name);
+                    setDescription(product.description);
+                    setPrice(product.price);
+                    setExistingImages(product.imageUrl);
+                } catch (error) {
+                    console.error("Error fetching product:", error);
+                }
+            };
+            fetchProduct();
+        }
+    }, [id]);
+
     const handleImageChange = (e) => {
         setImages([...e.target.files]);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        
         const formData = new FormData();
         formData.append('name', name);
         formData.append('description', description);
         formData.append('price', price);
-        formData.append('userEmail',email )
+        formData.append('userEmail', email);
         images.forEach((image) => {
-            formData.append('images', image); // ✅ Correct format
+            formData.append('images', image);
         });
         
-
         try {
-            const response = await axios.post('http://localhost:3000/api/addProducts',formData)
-            console.log(response.data)
-            setProducts(response.data.product)
-            if(response.data.success){
-                alert(response.data.message)
-                navigate('/')
+            let response;
+            if (id) {
+                response = await axios.put(`http://localhost:3000/api/products/${id}`, formData);
+            } else {
+                response = await axios.post('http://localhost:3000/api/addProducts', formData);
             }
-            
+            console.log(response.data); 
+            setProducts(prevProducts => {
+                if (id) {
+                    return prevProducts.map(prod => prod._id === id ? response.data.product : prod);
+                } else {
+                    return [...prevProducts, response.data.product];
+                }
+            });
+            if (response.data.success) {
+                alert(response.data.message);
+                navigate('/');
+            }
         } catch (error) {
-            console.error('Error adding product:', error);
-            alert('Error adding product');
+            console.error('Error in adding or editing the product:', error);
+            alert('Error in adding or editing the product');
         }
     };
 
@@ -56,9 +87,12 @@ function ProductForm({setProducts}) {
             </label>
             <label style={labelStyle}>
                 Product Images:
-                <input type="file" multiple onChange={handleImageChange} required style={inputStyle} />
+                <input type="file" multiple onChange={handleImageChange} style={inputStyle} />
             </label>
             <div style={previewContainerStyle}>
+                {existingImages.length > 0 && existingImages.map((image, index) => (
+                    <img key={index} src={`http://localhost:3000/${image}`} alt={`Preview ${index}`} style={previewImageStyle} />
+                ))}
                 {images.length > 0 && images.map((image, index) => (
                     <img key={index} src={URL.createObjectURL(image)} alt={`Preview ${index}`} style={previewImageStyle} />
                 ))}
@@ -85,7 +119,7 @@ const labelStyle = {
     display: 'flex',
     flexDirection: 'column',
     gap: '8px',
-    color: '#000', 
+    color: '#000',
 };
 
 const inputStyle = {
