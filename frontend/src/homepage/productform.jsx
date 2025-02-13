@@ -16,7 +16,7 @@ function ProductForm({ setProducts }) {
         if (id) {
             const fetchProduct = async () => {
                 try {
-                    const response = await axios.get(`http://localhost:3000/api/products/${id}`);
+                    const response = await axios.get(`http://localhost:3001/api/products/${id}`);
                     const product = response.data;
                     setName(product.name);
                     setDescription(product.description);
@@ -49,9 +49,9 @@ function ProductForm({ setProducts }) {
         try {
             let response;
             if (id) {
-                response = await axios.put(`http://localhost:3000/api/products/${id}`, formData);
+                response = await axios.put(`http://localhost:3001/api/products/${id}`, formData);
             } else {
-                response = await axios.post('http://localhost:3000/api/addProducts', formData);
+                response = await axios.post('http://localhost:3001/api/addProducts', formData);
             }
             console.log(response.data); 
             setProducts(prevProducts => {
@@ -72,35 +72,66 @@ function ProductForm({ setProducts }) {
     };
 
     return (
-        <form onSubmit={handleSubmit} style={formStyle}>
-            <label style={labelStyle}>
-                Product Name:
-                <input type="text" value={name} onChange={(e) => setName(e.target.value)} required style={inputStyle} />
-            </label>
-            <label style={labelStyle}>
-                Description:
-                <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} required style={inputStyle} />
-            </label>
-            <label style={labelStyle}>
-                Price:
-                <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} required style={inputStyle} />
-            </label>
-            <label style={labelStyle}>
-                Product Images:
-                <input type="file" multiple onChange={handleImageChange} style={inputStyle} />
-            </label>
-            <div style={previewContainerStyle}>
-                {existingImages.length > 0 && existingImages.map((image, index) => (
-                    <img key={index} src={`http://localhost:3000/${image}`} alt={`Preview ${index}`} style={previewImageStyle} />
-                ))}
-                {images.length > 0 && images.map((image, index) => (
-                    <img key={index} src={URL.createObjectURL(image)} alt={`Preview ${index}`} style={previewImageStyle} />
-                ))}
+        <div style={backgroundStyle}>
+            <div style={overlayStyle}>
+                <form onSubmit={handleSubmit} style={formStyle}>
+                    <label style={labelStyle}>
+                        Product Name:
+                        <input type="text" value={name} onChange={(e) => setName(e.target.value)} required style={inputStyle} />
+                    </label>
+                    <label style={labelStyle}>
+                        Description:
+                        <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} required style={inputStyle} />
+                    </label>
+                    <label style={labelStyle}>
+                        Price:
+                        <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} required style={inputStyle} />
+                    </label>
+                    <label style={labelStyle}>
+                        Product Images:
+                        <input type="file" multiple onChange={handleImageChange} style={inputStyle} />
+                    </label>
+                    <div style={previewContainerStyle}>
+                        {existingImages.length > 0 && existingImages.map((image, index) => (
+                            <img key={index} src={`http://localhost:3001/${image}`} alt={`Preview ${index}`} style={previewImageStyle} />
+                        ))}
+                        {images.length > 0 && images.map((image, index) => (
+                            <img key={index} src={URL.createObjectURL(image)} alt={`Preview ${index}`} style={previewImageStyle} />
+                        ))}
+                    </div>
+                    <button type="submit" style={buttonStyle}>Submit</button>
+                </form>
             </div>
-            <button type="submit" style={buttonStyle}>Submit</button>
-        </form>
+        </div>
     );
 }
+
+const backgroundStyle = {
+    backgroundColor: "#4F7942",
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+    padding: '20px',
+};
+
+const overlayStyle = {
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    padding: '20px',
+    borderRadius: '8px',
+    boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+};
+
+const buttonStyle = {
+    padding: '10px 20px',
+    borderRadius: '4px',
+    border: 'none',
+    backgroundColor: '#E2D7AB',
+    color: '#000',
+    cursor: 'pointer',
+};
 
 const formStyle = {
     display: 'flex',
@@ -111,7 +142,7 @@ const formStyle = {
     padding: '20px',
     border: '1px solid #ccc',
     borderRadius: '8px',
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)', 
     boxShadow: '0 0 10px rgba(168, 216, 144, 0.1)',
 };
 
@@ -126,15 +157,6 @@ const inputStyle = {
     padding: '8px',
     borderRadius: '4px',
     border: '1px solid #ccc',
-};
-
-const buttonStyle = {
-    padding: '10px 20px',
-    borderRadius: '4px',
-    border: 'none',
-    backgroundColor: '#007bff',
-    color: '#fff',
-    cursor: 'pointer',
 };
 
 const previewContainerStyle = {

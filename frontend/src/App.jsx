@@ -13,7 +13,7 @@ function App() {
 
   const fetchProducts = async () => {
     try {
-      let res = await axios.get('http://localhost:3000/api/products');
+      let res = await axios.get('http://localhost:3001/api/products');
       setProducts(res.data);
     } catch (error) {
       console.log("Error: ", error.message);
@@ -22,7 +22,7 @@ function App() {
 
   useEffect(() => {
     fetchProducts();
-  }, []); // Empty dependency array to call fetchProducts only once
+  }, []); // Empty 
 
   return (
     <BrowserRouter>
