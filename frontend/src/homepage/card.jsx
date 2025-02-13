@@ -1,6 +1,7 @@
 import React from 'react';
+import { Link } from "react-router-dom";
 
-function Card({ name, image,description, price }) {
+function Card({ id, name, image, description, price, showEditButton }) {
     return (
         <div style={{ 
             border: '1px solid #ccc', 
@@ -14,6 +15,7 @@ function Card({ name, image,description, price }) {
             <h3>{name}</h3>
             <p>{description}</p>
             <p>${price.toFixed(2)}</p>
+            {showEditButton && <Link to={`/edit/${id}`} className="nav-link">Edit</Link>}
         </div>
     );
 }

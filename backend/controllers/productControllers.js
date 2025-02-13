@@ -17,7 +17,7 @@ const createProduct = async (req, res) => {
         await newProduct.save();
         res.status(201).json({ message: 'Product created successfully',success:true, product: newProduct });
     } catch (error) {
-        console.error('Error creating product:', error); // Add logging
+        console.error('Error creating product:', error); 
         res.status(400).json({ message: 'Error creating product', error: error.message });
     }
 };
@@ -27,7 +27,7 @@ const getAllProducts = async (req, res) => {
         const products = await Product.find();
         res.status(200).json(products);
     } catch (error) {
-        console.error('Error fetching products:', error); // Add logging
+        console.error('Error fetching products:', error); 
         res.status(500).json({ message: 'Error fetching products', error: error.message });
     }
 };
@@ -38,9 +38,47 @@ const getProductsByUserEmail = async (req, res) => {
         const products = await Product.find({ userEmail: email });
         res.status(200).json(products);
     } catch (error) {
-        console.error('Error fetching products by user email:', error); // Add logging
+        console.error('Error fetching products by user email:', error); 
         res.status(500).json({ message: 'Error fetching products', error: error.message });
     }
 };
 
-module.exports = { createProduct, getAllProducts, getProductsByUserEmail };
+
+const getProductById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const product = await Product.findById(id);
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+        res.status(200).json(product);
+    } catch (error) {
+        console.error("Error fetching product: ", error);
+        res.status(500).json({ message: "Error in fetching product", error: error.message });
+    }
+};
+
+const editProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, description, price, userEmail } = req.body;
+        const imageUrls = req.files.map(file => path.join('uploads', file.filename));
+
+        const updatedProduct = await Product.findByIdAndUpdate(
+            id,
+            { name, description, price, userEmail, imageUrl: imageUrls },
+            { new: true }
+        );
+
+        if (!updatedProduct) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        res.status(200).json({ message: 'Product updated successfully', success: true, product: updatedProduct });
+    } catch (error) {
+        console.error("Error updating product: ", error);
+        res.status(500).json({ message: "Error in updating product", error: error.message });
+    }
+};
+
+module.exports = { createProduct, getAllProducts, getProductsByUserEmail ,editProduct,getProductById };
