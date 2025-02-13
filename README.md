@@ -173,4 +173,9 @@ Decryption: When a user attempts to log in, the entered password is verified aga
 
 **Backend**: Already create a endpoint to update the product details.\
 **Frontend**: Added Edit button on clicking the edit button it will redirect to a form with details filled automatically using location from `react-router-dom` made a put request to PUT `/api/products/:id` this endpoint.
-**Frontend**: Added Edit button on clicking the edit button it will redirect to a form with details filled automatically using location from `react-router-dom` made a put request to PUT `/api/products/:id` this endpoint.
+
+
+##  🎯Milestone 14
+
+**Backend**: Already create a endpoint to Delete the product.\
+**Frontend**: Added Delete button on clicking the delete button it will make a delete request to `/api/products/:id` which will delete the product from the database
