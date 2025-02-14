@@ -41,7 +41,7 @@
 .web-name {
     font-size: 54px;
     font-weight: bold;
-    color: #000;
+    color: white;
 }
 
 .navbar-right {
@@ -69,4 +69,15 @@
     gap: 20px;
     width: 100%;
     max-width: 1200px;
+}
+
+.navbar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-image: url('/military-background.jpg'); 
+    border-radius: 8px;
+    margin-bottom: 20px;
 }
