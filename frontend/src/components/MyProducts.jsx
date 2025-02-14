@@ -64,18 +64,7 @@ const MyProducts = ({ products }) => {
     return (
         <div style={containerStyle}>
             <style>{mediaQueries}</style>
-            <div style={{ width: '100%', textAlign: 'center', marginBottom: '20px' }}>
-                <Link to="/" style={{ 
-                    textDecoration: 'none', 
-                    color: 'black', 
-                    backgroundColor: '#E2D7AB', 
-                    padding: '10px 20px', 
-                    borderRadius: '5px' ,
-                    border: '1px solid #ccc', 
-                }}>
-                    Home
-                </Link>
-            </div>
+            
             {myProducts && myProducts.map(prod => (
                 <div key={prod._id} style={cardStyle} className="card">
                     <Card 
