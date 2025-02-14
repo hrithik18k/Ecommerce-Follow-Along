@@ -81,16 +81,8 @@
 }
 
 .nav-link {
-  padding: 10px 20px;
-  border-radius: 4px;
+  color: black;
   text-decoration: none;
-  color: #fff;
-  background-color: #007bff;
-  transition: background-color 0.3s ease;
-}
-
-.nav-link:hover {
-  background-color: #0056b3;
 }
 
 .products-grid {
