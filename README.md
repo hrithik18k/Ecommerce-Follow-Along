@@ -184,3 +184,8 @@ Decryption: When a user attempts to log in, the entered password is verified aga
 
 **Navigation Bar**: Create a Navigation bar with home, add products,my products, cart and added necessary redirect Link\
 **Responsive**: Created a Responsive navigation bar making hamburger style navbar for mobile devices.
+
+
+## 🎯Milestone 16
+**Frontend**: Develop a Product Details Page that displays relevant information when a user clicks on a product card.
+Implement quantity selection with increment and decrement functionality, along with an "Add to Cart" button.
