@@ -75,6 +75,7 @@ const MyProducts = ({ products }) => {
                         price={prod.price} 
                         showEditButton={true} 
                         onDelete={handleDelete} 
+                        showDetailsLink={false} 
                     />
                 </div>
             ))}

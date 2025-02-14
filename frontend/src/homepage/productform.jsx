@@ -107,7 +107,8 @@ function ProductForm({ setProducts }) {
 }
 
 const backgroundStyle = {
-    backgroundColor: "#4F7942",
+    backgroundColor: "red",
+    backgroundImage: "url('/military-background.jpg')",
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     display: 'flex',
@@ -116,7 +117,6 @@ const backgroundStyle = {
     height: '100vh',
     padding: '20px',
 };
-
 const overlayStyle = {
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
     padding: '20px',

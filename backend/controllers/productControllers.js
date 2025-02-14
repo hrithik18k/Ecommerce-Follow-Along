@@ -62,7 +62,12 @@ const editProduct = async (req, res) => {
     try {
         const { id } = req.params;
         const { name, description, price, userEmail } = req.body;
-        const imageUrls = req.files.map(file => path.join('uploads', file.filename));
+        let imageUrls = req.files.map(file => path.join('uploads', file.filename));
+
+        if (imageUrls.length === 0) {
+            const existingProduct = await Product.findById(id);
+            imageUrls = existingProduct.imageUrl;
+        }
 
         const updatedProduct = await Product.findByIdAndUpdate(
             id,
