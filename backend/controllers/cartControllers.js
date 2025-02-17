@@ -30,4 +30,20 @@ const addToCart = async (req, res) => {
     }
 };
 
-module.exports = { addToCart };
+const getCartItems = async (req, res) => {
+    try {
+        const { email } = req.params;
+        const user = await User.findOne({ email }).populate('cart.productId');
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({ cart: user.cart });
+    } catch (error) {
+        console.error('Error fetching cart items:', error);
+        res.status(500).json({ message: 'Error fetching cart items', error: error.message });
+    }
+};
+
+module.exports = { addToCart, getCartItems };
