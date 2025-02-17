@@ -19,7 +19,14 @@ const userSchema = new mongoose.Schema({
 
     profilePicture:{
         type:String,
-    }
+    },
+
+    cart: [
+        {
+            productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+            quantity: { type: Number, default: 1 }
+        }
+    ]
     
 });
 module.exports = mongoose.model('User', userSchema);
