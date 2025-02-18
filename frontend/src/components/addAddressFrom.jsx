@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+import './address.css'; // Import the CSS file
 
 const AddAddressForm = () => {
     const [address, setAddress] = useState({
@@ -32,32 +32,34 @@ const AddAddressForm = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div>
+        <form onSubmit={handleSubmit} className="form-container">
+            <div className="form-group">
                 <label>Country:</label>
                 <input type="text" name="country" value={address.country} onChange={handleChange} required />
             </div>
-            <div>
+            <div className="form-group">
                 <label>City:</label>
                 <input type="text" name="city" value={address.city} onChange={handleChange} required />
             </div>
-            <div>
+            <div className="form-group">
                 <label>Address 1:</label>
                 <input type="text" name="address1" value={address.address1} onChange={handleChange} required />
             </div>
-            <div>
+            <div className="form-group">
                 <label>Address 2:</label>
                 <input type="text" name="address2" value={address.address2} onChange={handleChange} />
             </div>
-            <div>
+            <div className="form-group">
                 <label>Zip Code:</label>
                 <input type="text" name="zipCode" value={address.zipCode} onChange={handleChange} required />
             </div>
-            <div>
+            <div className="form-group">
                 <label>Address Type:</label>
                 <input type="text" name="addressType" value={address.addressType} onChange={handleChange} required />
             </div>
-            <button type="submit">Add Address</button>
+            <div className="form-group">
+                <button type="submit">Add Address</button>
+            </div>
         </form>
     );
 };

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Profile = () => {
     const [user, setUser] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
-    const [newAddress, setNewAddress] = useState('');
     const [profilePicture, setProfilePicture] = useState(null);
     const email = localStorage.getItem("email");
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUserProfile = async () => {
@@ -23,29 +24,6 @@ const Profile = () => {
 
     const handleFileChange = (e) => {
         setProfilePicture(e.target.files[0]);
-    };
-
-    const handleAddAddress = async () => {
-        if (newAddress.trim() !== '') {
-            const updatedAddresses = [...user.addresses, newAddress];
-            setUser(prevUser => ({
-                ...prevUser,
-                addresses: updatedAddresses
-            }));
-            setNewAddress('');
-
-            // Update addresses in the database
-            try {
-                await axios.put(`http://localhost:3001/api/users/profile/${email}`, {
-                    name: user.name,
-                    email: user.email,
-                    addresses: updatedAddresses
-                });
-            } catch (error) {
-                console.error('Error updating addresses:', error);
-                alert('Error updating addresses');
-            }
-        }
     };
 
     const handleEditProfile = async (e) => {
@@ -90,20 +68,13 @@ const Profile = () => {
                 {user.addresses && user.addresses.length > 0 ? (
                     user.addresses.map((address, index) => (
                         <div key={index} style={addressStyle}>
-                            <p>{address}</p>
+                            <p>{address.country}, {address.city}, {address.address1}, {address.address2}, {address.zipCode}, {address.addressType}</p>
                         </div>
                     ))
                 ) : (
                     <p>No address found</p>
                 )}
-                <input
-                    type="text"
-                    value={newAddress}
-                    onChange={(e) => setNewAddress(e.target.value)}
-                    placeholder="Add new address"
-                    style={inputStyle}
-                />
-                <button onClick={handleAddAddress} style={buttonStyle}>Add Address</button>
+                <button onClick={() => navigate('/add-address')} style={buttonStyle}>Add Address</button>
             </div>
             {isEditing && (
                 <form onSubmit={handleEditProfile} style={formStyle}>
