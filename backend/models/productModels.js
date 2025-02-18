@@ -20,7 +20,11 @@ const productSchema = new mongoose.Schema({
     userEmail:{
         type:String,
     },
-    
+    stock: {
+        type: Number,
+        required: true,
+        min: 0
+    }
 }, {timestamps: true});
 const Product = mongoose.model('Product', productSchema);
 

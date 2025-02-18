@@ -1,6 +1,7 @@
 const User = require("../models/userModel");
 
 const bcrypt = require("bcryptjs");
+const generateToken = require('../utiles/tokens');
 
 
 const registerUser = async (req, res) => {
@@ -37,22 +38,24 @@ const registerUser = async (req, res) => {
 
 // Login function
 const loginUser = async (req, res) => {
-    try {
-        const { email, password } = req.body;
+    const { email, password } = req.body;
 
-        // Check if user exists
+    try {
         const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(404).json({ message: "User Not found" });
+
+        if (!user || !(await user.matchPassword(password))) {
+            return res.status(401).json({ message: 'Invalid email or password' });
         }
-        
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(401).json({ message: "Invalid Credentials" });
-        }
-        res.status(200).json({ message: "Login successful", user });
-    } catch (err) {
-        res.status(500).json({ message: "Error in logging", error: err.message });
+
+        res.status(200).json({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            token: generateToken(user._id),
+        });
+    } catch (error) {
+        console.error('Error logging in:', error);
+        res.status(500).json({ message: 'Server error' });
     }
 };
 
