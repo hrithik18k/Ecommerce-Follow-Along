@@ -9,10 +9,12 @@ import SignUp from './components/signUp';
 import MyProducts from './components/MyProducts';
 import ProductDetails from './components/ProductDetails';
 import CartPage from './components/cartPage'; 
+import Profile from './components/profile'; // Import Profile component
 import { Link, useNavigate } from "react-router-dom";
 
 function App() {
     const [products, setProducts] = useState([]);
+    const [user, setUser] = useState(null);
     const location = useLocation();
     const navigate = useNavigate();
     const email = localStorage.getItem("email");
@@ -26,9 +28,21 @@ function App() {
         }
     };
 
+    const fetchUserProfile = async () => {
+        try {
+            const response = await axios.get(`http://localhost:3001/api/users/profile/${email}`);
+            setUser(response.data);
+        } catch (error) {
+            console.error('Error fetching user profile:', error);
+        }
+    };
+
     useEffect(() => {
         fetchProducts();
-    }, []);
+        if (email) {
+            fetchUserProfile();
+        }
+    }, [email]);
 
     const handleLogout = () => {
         localStorage.removeItem("email");
@@ -49,6 +63,12 @@ function App() {
                                 <Link to={'/create'} className="nav-link">Add Product</Link>
                                 <Link to={'/my-products'} className="nav-link">My Products</Link>
                                 <Link to={'/cart'} className="nav-link">Cart</Link>
+                                {user && (
+                                    <Link to={'/profile'} className="profile-info">
+                                        <img src={`http://localhost:3001/${user.profilePicture}`} alt="Profile" className="profile-image" />
+                                        <span className="profile-name">{user.name}</span>
+                                    </Link>
+                                )}
                                 <button onClick={handleLogout} className="nav-link">Logout</button>
                             </>
                         ) : (
@@ -69,6 +89,7 @@ function App() {
                 <Route path="/edit/:id" element={<ProductForm setProducts={setProducts} />} />
                 <Route path="/product/:id" element={<ProductDetails />} /> 
                 <Route path="/cart" element={<CartPage />} />
+                <Route path="/profile" element={<Profile />} />
             </Routes>
         </div>
     );

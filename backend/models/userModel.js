@@ -21,7 +21,9 @@ const userSchema = new mongoose.Schema({
     profilePicture:{
         type:String,
     },
-
+    addresses: {
+        type: [String],
+    },
     cart: [
         {
             productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
