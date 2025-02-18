@@ -1,5 +1,5 @@
 const express = require('express');
-const { registerUser, loginUser, getUserProfile, updateUserProfile } = require('../controllers/userControllers');
+const { registerUser, loginUser, getUserProfile, updateUserProfile, addAddress} = require('../controllers/userControllers');
 const { addToCart, getCartItems, updateCartItemQuantity, deleteCartItem } = require('../controllers/cartControllers'); // Import cart controllers
 const { upload } = require('../middlewares/multer');
 
@@ -13,5 +13,6 @@ router.post('/cart', addToCart); // Add to cart route
 router.get('/cart/:email', getCartItems); // Get cart items route
 router.post('/cart/quantity', updateCartItemQuantity); // Update cart item quantity route
 router.delete('/cart/:email/:productId', deleteCartItem); // Delete cart item route
+router.put('/profile/:email/address', addAddress);
 
 module.exports = router;
