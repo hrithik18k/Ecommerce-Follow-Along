@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const CartPage = () => {
     const [cartItems, setCartItems] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
     const userEmail = localStorage.getItem('email'); // Retrieve email from local storage
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchCartItems = async () => {
@@ -61,6 +63,10 @@ const CartPage = () => {
         setTotalPrice(total);
     };
 
+    const handlePlaceOrder = () => {
+        navigate('/select-address');
+    };
+
     return (
         <div style={{ padding: '20px', backgroundImage: "url('/military-background.jpg')", borderRadius: '8px', maxWidth: '800px', margin: '0 auto' }}>
             <h1 style={{ color: "white" }}>Cart</h1>
@@ -91,6 +97,7 @@ const CartPage = () => {
             <div style={{ marginTop: '20px', color: 'white', fontSize: '20px', fontWeight: 'bold' }}>
                 Total Price: ${totalPrice.toFixed(2)}
             </div>
+            <button onClick={handlePlaceOrder} style={{ marginTop: '20px', padding: '10px 20px', backgroundColor: 'darkGreen', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Place Order</button>
         </div>
     );
 };
