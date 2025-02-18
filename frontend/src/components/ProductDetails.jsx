@@ -6,6 +6,7 @@ const ProductDetails = () => {
     const { id } = useParams();
     const [product, setProduct] = useState(null);
     const [quantity, setQuantity] = useState(1);
+    const userEmail = localStorage.getItem("email");
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -19,9 +20,27 @@ const ProductDetails = () => {
         fetchProduct();
     }, [id]);
 
-    const handleAddToCart = () => {
+    const handleAddToCart = async () => {
+        if (quantity > product.stock) {
+            alert('Quantity exceeds available stock');
+            return;
+        }
 
-        alert(`Added ${quantity} of ${product.name} to cart`);
+        try {
+            const response = await axios.post('http://localhost:3001/api/users/cart', {
+                email: userEmail,
+                productId: product._id,
+                quantity: parseInt(quantity)
+            });
+            if (response.status === 200) {
+                alert(`Added ${quantity} of ${product.name} to cart`);
+            } else {
+                alert('Failed to add product to cart');
+            }
+        } catch (error) {
+            console.error('Error adding product to cart:', error);
+            alert('Error adding product to cart');
+        }
     };
 
     if (!product) {
@@ -34,9 +53,10 @@ const ProductDetails = () => {
             <h2>Name: {product.name}</h2>
             <p>Description: {product.description}</p>
             <p>Price: <b>{product.price.toFixed(2)}M $</b></p>
+            <p>Stock: {product.stock}</p> 
             <div>
                 <label>Quantity: </label>
-                <input type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} min="1" style={{ width: '50px', marginRight: '10px' }} />
+                <input type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} min="1" max={product.stock} style={{ width: '50px', marginRight: '10px' }} />
                 <button onClick={handleAddToCart} style={{ padding: '10px 20px', backgroundColor: 'rgba(255, 255, 255, 0.8)', border: '1px solid black', borderRadius: '4px', cursor: 'pointer' }}>Add to Cart</button>
             </div>
         </div>

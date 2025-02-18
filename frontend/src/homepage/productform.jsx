@@ -7,6 +7,7 @@ function ProductForm({ setProducts }) {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
+    const [stock, setStock] = useState(''); 
     const [images, setImages] = useState([]);
     const [existingImages, setExistingImages] = useState([]);
     const email = localStorage.getItem("email");
@@ -21,6 +22,7 @@ function ProductForm({ setProducts }) {
                     setName(product.name);
                     setDescription(product.description);
                     setPrice(product.price);
+                    setStock(product.stock);
                     setExistingImages(product.imageUrl);
                 } catch (error) {
                     console.error("Error fetching product:", error);
@@ -36,24 +38,33 @@ function ProductForm({ setProducts }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         const formData = new FormData();
         formData.append('name', name);
         formData.append('description', description);
         formData.append('price', price);
+        formData.append('stock', stock); 
         formData.append('userEmail', email);
         images.forEach((image) => {
             formData.append('images', image);
         });
-        
+
         try {
             let response;
             if (id) {
-                response = await axios.put(`http://localhost:3001/api/products/${id}`, formData);
+                response = await axios.put(`http://localhost:3001/api/products/${id}`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
             } else {
-                response = await axios.post('http://localhost:3001/api/addProducts', formData);
+                response = await axios.post('http://localhost:3001/api/products', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
             }
-            console.log(response.data); 
+            console.log(response.data);
             setProducts(prevProducts => {
                 if (id) {
                     return prevProducts.map(prod => prod._id === id ? response.data.product : prod);
@@ -86,6 +97,10 @@ function ProductForm({ setProducts }) {
                     <label style={labelStyle}>
                         Price:
                         <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} required style={inputStyle} />
+                    </label>
+                    <label style={labelStyle}>
+                        Stock:
+                        <input type="number" value={stock} onChange={(e) => setStock(e.target.value)} required style={inputStyle} />
                     </label>
                     <label style={labelStyle}>
                         Product Images:
@@ -142,7 +157,7 @@ const formStyle = {
     padding: '20px',
     border: '1px solid #ccc',
     borderRadius: '8px',
-    backgroundColor: 'rgba(255, 255, 255, 0.8)', 
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
     boxShadow: '0 0 10px rgba(168, 216, 144, 0.1)',
 };
 

@@ -15,17 +15,24 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        const response = await fetch('http://localhost:3001/login', {
-            method: 'POST', 
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-        });
-        if(response.ok){
-            localStorage.setItem("email", email);
-            navigate('/');
+        try {
+            const response = await fetch('http://localhost:3001/api/users/login', { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            if (response.ok) {
+                localStorage.setItem("email", email);
+                navigate('/');
+            } else {
+                const data = await response.json();
+                alert(data.message);
+            }
+        } catch (error) {
+            console.error('Error logging in:', error);
+            alert('Error logging in');
         }
-        const data = await response.json(); 
-        alert(data.message);
     };
 
     return (

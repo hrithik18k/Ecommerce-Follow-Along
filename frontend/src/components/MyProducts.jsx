@@ -21,6 +21,10 @@ const MyProducts = ({ products }) => {
                 setMyProducts(myProducts.filter(product => product._id !== id));
                 alert(response.data.message);
             }
+            const response1 = await axios.delete(`http://localhost:3001/api/users/cart/${email}/${id}`);
+            if (response1.data.success) {
+                alert(response.data.message);
+            }
         } catch (error) {
             console.error('Error deleting product:', error);
             alert('Error deleting product');
@@ -76,6 +80,7 @@ const MyProducts = ({ products }) => {
                         showEditButton={true} 
                         onDelete={handleDelete} 
                         showDetailsLink={false} 
+                        showAddToCartButton={false} 
                     />
                 </div>
             ))}
