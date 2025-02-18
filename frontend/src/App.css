@@ -93,3 +93,21 @@
   max-width: 1200px;
 }
 
+.profile-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: 20px;
+}
+
+.profile-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-name {
+  font-size: 16px;
+  color:white;
+}
