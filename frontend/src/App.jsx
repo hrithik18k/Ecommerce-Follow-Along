@@ -7,7 +7,8 @@ import axios from 'axios';
 import Login from './components/Login';
 import SignUp from './components/signUp';
 import MyProducts from './components/MyProducts';
-import ProductDetails from './components/ProductDetails'; // Import the new component
+import ProductDetails from './components/ProductDetails';
+import CartPage from './components/cartPage'; 
 import { Link, useNavigate } from "react-router-dom";
 
 function App() {
@@ -47,6 +48,7 @@ function App() {
                             <>
                                 <Link to={'/create'} className="nav-link">Add Product</Link>
                                 <Link to={'/my-products'} className="nav-link">My Products</Link>
+                                <Link to={'/cart'} className="nav-link">Cart</Link>
                                 <button onClick={handleLogout} className="nav-link">Logout</button>
                             </>
                         ) : (
@@ -65,7 +67,8 @@ function App() {
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/my-products" element={<MyProducts products={products} />} />
                 <Route path="/edit/:id" element={<ProductForm setProducts={setProducts} />} />
-                <Route path="/product/:id" element={<ProductDetails />} /> {/* Add this route */}
+                <Route path="/product/:id" element={<ProductDetails />} /> 
+                <Route path="/cart" element={<CartPage />} />
             </Routes>
         </div>
     );

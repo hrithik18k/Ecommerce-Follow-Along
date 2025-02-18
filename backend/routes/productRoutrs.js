@@ -3,12 +3,11 @@ const router = express.Router();
 const { createProduct, getAllProducts, getProductsByUserEmail, getProductById, editProduct, deletedProduct } = require('../controllers/productControllers');
 const { upload } = require('../middlewares/multer');
 
-router.post('/addProducts', upload.array('images'), createProduct);
-router.get('/', getAllProducts);
-router.get('/user/:email', getProductsByUserEmail);
-router.get('/:id', getProductById);
-router.put('/:id', upload.array('images'), editProduct);
-router.put('/edit/:id', editProduct);
-router.delete('/:id', deletedProduct);
+router.post('/products', upload.array('images', 10), createProduct); // Apply upload middleware
+router.get('/products', getAllProducts);
+router.get('/products/user/:email', getProductsByUserEmail);
+router.get('/products/:id', getProductById);
+router.put('/products/:id', upload.array('images', 10), editProduct); // Apply upload middleware
+router.delete('/products/:id', deletedProduct);
 
 module.exports = router;
