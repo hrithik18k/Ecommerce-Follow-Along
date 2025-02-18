@@ -189,3 +189,19 @@ Decryption: When a user attempts to log in, the entered password is verified aga
 ## 🎯Milestone 16
 **Frontend**: Develop a Product Details Page that displays relevant information when a user clicks on a product card.
 Implement quantity selection with increment and decrement functionality, along with an "Add to Cart" button.
+
+## 🎯Milestone 17
+
+**Backend**: Created a Cart Schema to store the cart products and wrote necessary functions to add Products in cart, Delete products in cart and update the total price of the cart.
+
+## 🎯Milestone 18 
+
+**Backend**: Create a endpoint  GET `/api/cart` to get all the products to display in the frontend\
+**Frontend**: Displayed all the cart products by getting the product by id and displaying using the Cart cart created for Cart page
+
+## 🎯Milestone 19
+
+**Backend**: Create a endpoint to update the quantity of the product in the cart\
+**Frontend**: Added a Increment and Decrement Button to Increase and Decrease the Quantity of the product and updated the total price of the cart.
+
+
