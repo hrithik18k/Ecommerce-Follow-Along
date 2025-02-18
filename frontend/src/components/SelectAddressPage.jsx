@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const SelectAddressPage = () => {
     const [addresses, setAddresses] = useState([]);
     const [selectedAddress, setSelectedAddress] = useState(null);
     const userEmail = localStorage.getItem('email');
     const navigate = useNavigate();
+    const location = useLocation();
+    const { cartItems, totalPrice } = location.state;
 
     useEffect(() => {
         const fetchAddresses = async () => {
@@ -27,9 +29,7 @@ const SelectAddressPage = () => {
 
     const handleConfirmOrder = () => {
         if (selectedAddress) {
-            // Proceed with order placement logic
-            console.log('Order placed with address:', selectedAddress);
-            navigate('/order-confirmation');
+            navigate('/order-confirmation', { state: { cartItems, selectedAddress, totalPrice } });
         } else {
             alert('Please select an address');
         }
