@@ -208,5 +208,13 @@ Implement quantity selection with increment and decrement functionality, along w
 ## 🎯Milestone 20
 
 **Backend**: Create a endpoint GET `api/auth` which will display the current logged user profile details.\
-**Frontend**: Profile page created in the frontend which will show the user Details which contains the avatar, name, email, role and the address if address provided or else a text with "No Address Provided" with a Add Address Button
+**Frontend**: Profile page created in the frontend which will show the user Details which contains the avatar, name, email, role and the address if address provided or else a text with "No Address Provided" with a Add Address Button.
+
+## 🎯 Milestone 21
+
+**Frontend**: In the Profile page, added add address button in the address section if address is not provided on clicking the button it will redirect to a address form which will contain city,address1, address2, zipcode.
+
+## 🎯 Milestone 22
+
+**Endpoint Creation**: Created a new endpoint in the user controller of POST `api/auth/add/address` it will add the address to the current logged in user.
 
