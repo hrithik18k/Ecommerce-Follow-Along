@@ -12,6 +12,7 @@ import CartPage from './components/cartPage';
 import Profile from './components/profile'; // Import Profile component
 import AddAddressForm from './components/addAddressFrom'; // Import AddAddressForm component
 import SelectAddressPage from './components/SelectAddressPage'; // Import SelectAddressPage component
+import OrderConfirmationPage from './components/OrderConfirmationPage'; // Import OrderConfirmationPage component
 
 import { Link, useNavigate } from "react-router-dom";
 
@@ -95,6 +96,7 @@ function App() {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/add-address" element={<AddAddressForm />} />
                 <Route path="/select-address" element={<SelectAddressPage />} />
+                <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
             </Routes>
         </div>
     );
