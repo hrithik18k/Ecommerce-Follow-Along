@@ -64,7 +64,7 @@ const CartPage = () => {
     };
 
     const handlePlaceOrder = () => {
-        navigate('/select-address');
+        navigate('/select-address', { state: { cartItems, totalPrice } });
     };
 
     return (
