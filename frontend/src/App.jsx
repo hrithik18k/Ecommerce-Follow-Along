@@ -11,6 +11,7 @@ import ProductDetails from './components/ProductDetails';
 import CartPage from './components/cartPage'; 
 import Profile from './components/profile'; // Import Profile component
 import AddAddressForm from './components/addAddressFrom'; // Import AddAddressForm component
+import SelectAddressPage from './components/SelectAddressPage'; // Import SelectAddressPage component
 
 import { Link, useNavigate } from "react-router-dom";
 
@@ -93,6 +94,7 @@ function App() {
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/add-address" element={<AddAddressForm />} />
+                <Route path="/select-address" element={<SelectAddressPage />} />
             </Routes>
         </div>
     );
