@@ -10,6 +10,7 @@ import MyProducts from './components/MyProducts';
 import ProductDetails from './components/ProductDetails';
 import CartPage from './components/cartPage'; 
 import Profile from './components/profile'; // Import Profile component
+import AddAddressForm from "./components/addAddressFrom"
 import { Link, useNavigate } from "react-router-dom";
 
 function App() {
@@ -87,9 +88,10 @@ function App() {
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/my-products" element={<MyProducts products={products} />} />
                 <Route path="/edit/:id" element={<ProductForm setProducts={setProducts} />} />
-                <Route path="/product/:id" element={<ProductDetails />} /> 
+                <Route path="/product/:id" element={<ProductDetails />} />
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/add-address" element={<AddAddressForm />} /> {/* Add this line */}
             </Routes>
         </div>
     );

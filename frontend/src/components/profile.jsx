@@ -39,7 +39,7 @@ const Profile = () => {
                 await axios.put(`http://localhost:3001/api/users/profile/${email}`, {
                     name: user.name,
                     email: user.email,
-                    addresses: JSON.stringify(updatedAddresses)
+                    addresses: updatedAddresses
                 });
             } catch (error) {
                 console.error('Error updating addresses:', error);
