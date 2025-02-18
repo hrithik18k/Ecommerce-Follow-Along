@@ -218,3 +218,17 @@ Implement quantity selection with increment and decrement functionality, along w
 
 **Endpoint Creation**: Created a new endpoint in the user controller of POST `api/auth/add/address` it will add the address to the current logged in user.
 
+##🎯 Milestone 23
+
+**Frontend**: Added "Place Order" button in the cart page to navigate to the Select Address page and created Select Address page to display saved addresses and allow selection.\
+**Backend**: Developed backend endpoint to fetch user addresses and wrote Mongoose schema to store order details.
+
+## 🎯Milestone 24 
+
+**Frontend:** Created **Order Confirmation** page and displayed ordered products, selected address, and total cart value.\
+**Backend:**  API to fetch ordered products, total value, and selected address and handled order placement on button click.
+
+## 🎯Milestone 25
+
+**Endpoint Creation**: Create a Endpoint POST `api/order/place` to add the order with a unique order ID
+
