@@ -277,3 +277,16 @@ Implement quantity selection with increment and decrement functionality, along w
 
 ### Backend
 - Configured the **Razorpay API** to securely handle transactions via the endpoint `api/pay/checkout`.
+
+## 🎯Milestone 30
+
+### Frontend
+- Updated the payment page by integrating **Razorpay’s checkout widget**.
+- After creating a **Razorpay account** and obtaining **sandbox API keys**, installed the appropriate **NPM package** to display multiple online payment methods.
+
+### Backend
+- Created an endpoint (e.g., `/api/payment/razorpay`) that:
+  - Uses **Razorpay’s API** along with the client key to initialize and process transactions.
+  - Securely handles payment details.
+  - Updates the **order status** upon successful payment.
+
