@@ -13,6 +13,8 @@ import Profile from './components/profile'; // Import Profile component
 import AddAddressForm from './components/addAddressFrom'; // Import AddAddressForm component
 import SelectAddressPage from './components/SelectAddressPage'; // Import SelectAddressPage component
 import OrderConfirmationPage from './components/OrderConfirmationPage'; // Import OrderConfirmationPage component
+import OrderSuccessPage from './components/OrderSuccessPage'; // Import OrderSuccessPage component
+import MyOrdersPage from './components/MyOrdersPage'; // Import MyOrdersPage component
 
 import { Link, useNavigate } from "react-router-dom";
 
@@ -67,6 +69,7 @@ function App() {
                                 <Link to={'/create'} className="nav-link">Add Product</Link>
                                 <Link to={'/my-products'} className="nav-link">My Products</Link>
                                 <Link to={'/cart'} className="nav-link">Cart</Link>
+                                <Link to={'/my-orders'} className="nav-link">My Orders</Link>
                                 {user && (
                                     <Link to={'/profile'} className="profile-info">
                                         <img src={`http://localhost:3001/${user.profilePicture}`} alt="Profile" className="profile-image" />
@@ -97,6 +100,8 @@ function App() {
                 <Route path="/add-address" element={<AddAddressForm />} />
                 <Route path="/select-address" element={<SelectAddressPage />} />
                 <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
+                <Route path="/order-success" element={<OrderSuccessPage />} /> {/* Add this route */}
+                <Route path="/my-orders" element={<MyOrdersPage />} /> {/* Add My Orders route */}
             </Routes>
         </div>
     );

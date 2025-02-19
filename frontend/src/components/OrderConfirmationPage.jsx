@@ -1,15 +1,33 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const OrderConfirmationPage = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const { cartItems, selectedAddress, totalPrice } = location.state;
+    const token = localStorage.getItem('token'); // Get the token from localStorage
 
-    const handlePlaceOrder = () => {
-        // Implement order placement logic here
-        console.log('Order placed');
-        navigate('/order-success');
+    const handlePlaceOrder = async () => {
+        try {
+            const response = await axios.post('http://localhost:3001/api/orders/place-order', {
+                products: cartItems,
+                address: selectedAddress,
+                totalPrice
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}` // Include the token in the request headers
+                }
+            });
+
+            if (response.status === 201) {
+                navigate('/order-success');
+            } else {
+                console.error('Failed to place order');
+            }
+        } catch (error) {
+            console.error('Error placing order:', error);
+        }
     };
 
     return (
