@@ -232,3 +232,48 @@ Implement quantity selection with increment and decrement functionality, along w
 
 **Endpoint Creation**: Create a Endpoint POST `api/order/place` to add the order with a unique order ID
 
+
+## 🎯Milestone 26
+
+### Frontend
+- Built a **User Orders** page that showcases all past orders, including product details, order dates, and statuses.
+
+### Backend
+- Developed an API endpoint that takes a user's email, retrieves their **_id**, fetches all orders associated with that **_id**, and returns the order data.
+
+---
+
+## 🎯Milestone 27
+
+### Frontend
+- Designed a **My Orders** page to display all user orders with product details, order dates, and statuses.
+- Added a **My Orders** link to the navbar for quick access.
+
+### Backend
+- Implemented the **My Orders** API to retrieve user orders based on their email and return the corresponding order details.
+
+---
+
+## 🎯Milestone 28
+
+### Frontend
+- Enhanced the **My Orders** page by introducing a **Cancel Order** button for active orders.
+- The button remains hidden for already canceled orders.
+- Clicking it updates the order status to **Canceled**.
+
+### Backend
+- Developed an endpoint (`/api/order/cancel/:id`) that:
+  - Receives an **order ID**.
+  - Locates the order.
+  - Updates its status to **Canceled**.
+  - Saves the modification.
+
+---
+
+## 🎯Milestone 29
+
+### Frontend
+- Integrated **Razorpay's** checkout system to streamline online payments.
+
+### Backend
+- Configured the **Razorpay API** to securely handle transactions via the endpoint `api/pay/checkout`.
