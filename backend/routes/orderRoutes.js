@@ -2,11 +2,14 @@ const express = require('express');
 const { placeOrder, getUserOrders } = require('../controllers/orderControllers');
 const { protect } = require('../middlewares/authMiddleware');
 const Order = require('../models/order'); // Ensure the Order model is imported
+const { createOrder, verifyPayment } = require('../controllers/razorpayController');
 
 const router = express.Router();
 
 router.post('/place-order', protect, placeOrder);
 router.get('/user-orders', protect, getUserOrders);
+router.post('/create-order', createOrder);
+router.post('/verify-payment', verifyPayment);
 router.patch('/:orderId/cancel', protect, async (req, res) => {
     try {
         const { orderId } = req.params;
