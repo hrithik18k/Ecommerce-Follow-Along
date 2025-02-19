@@ -1,62 +1,30 @@
 const express = require('express');
+const { placeOrder, getUserOrders } = require('../controllers/orderControllers');
+const { protect } = require('../middlewares/authMiddleware');
+const Order = require('../models/order'); // Ensure the Order model is imported
+
 const router = express.Router();
-const Order = require('../models/order');
-const { protect } = require('../middlewares/authMiddleware'); // Correct middleware import
 
-// Create a new order
-router.post('/', protect, async (req, res) => {
-    const {
-        orderItems,
-        shippingAddress,
-        itemsPrice,
-        taxPrice,
-        shippingPrice,
-        totalPrice
-    } = req.body;
+router.post('/place-order', protect, placeOrder);
+router.get('/user-orders', protect, getUserOrders);
+router.patch('/:orderId/cancel', protect, async (req, res) => {
+    try {
+        const { orderId } = req.params;
+        console.log('Order cancellation request received for order ID:', orderId); // Add logging
 
-    if (orderItems && orderItems.length === 0) {
-        res.status(400).json({ message: 'No order items' });
-        return;
-    } else {
-        const order = new Order({
-            user: req.user._id,
-            orderItems,
-            shippingAddress,
-            itemsPrice,
-            taxPrice,
-            shippingPrice,
-            totalPrice,
-            status: 'Pending'
-        });
+        const order = await Order.findById(orderId);
 
-        const createdOrder = await order.save();
-        res.status(201).json(createdOrder);
-    }
-});
+        if (!order) {
+            console.log('Order not found for order ID:', orderId); // Add logging
+            return res.status(404).json({ message: 'Order not found' });
+        }
 
-// Get order by ID
-router.get('/:id', protect, async (req, res) => {
-    const order = await Order.findById(req.params.id).populate('user', 'name email');
-
-    if (order) {
-        res.json(order);
-    } else {
-        res.status(404).json({ message: 'Order not found' });
-    }
-});
-
-// Update order to delivered
-router.put('/:id/deliver', protect, async (req, res) => {
-    const order = await Order.findById(req.params.id);
-
-    if (order) {
-        order.deliveredAt = Date.now();
-        order.status = 'Delivered';
-
-        const updatedOrder = await order.save();
-        res.json(updatedOrder);
-    } else {
-        res.status(404).json({ message: 'Order not found' });
+        order.status = 'Canceled';
+        await order.save();
+        res.status(200).json({ message: 'Order canceled successfully' });
+    } catch (error) {
+        console.error('Error canceling order:', error);
+        res.status(500).json({ message: 'Server error', error });
     }
 });
 

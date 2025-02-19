@@ -23,7 +23,9 @@ const Login = () => {
             });
 
             if (response.ok) {
-                localStorage.setItem("email", email);
+                const data = await response.json();
+                localStorage.setItem("token", data.token); // Store the token in localStorage
+                localStorage.setItem("email", email); // Store the email in localStorage
                 navigate('/');
             } else {
                 const data = await response.json();
