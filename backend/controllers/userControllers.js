@@ -1,7 +1,6 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
-const generateToken = require('../utiles/tokens');
-
+const jwt = require('jsonwebtoken'); 
 const registerUser = async (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -35,22 +34,28 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
+    console.log('Login request received:', email);
+
     try {
         const user = await User.findOne({ email });
 
-        if (!user || !(await user.matchPassword(password))) {
-            return res.status(401).json({ message: 'Invalid email or password' });
-        }
+        if (user && (await bcrypt.compare(password, user.password))) {
+            const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+                expiresIn: '30d',
+            });
 
-        res.status(200).json({
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            token: generateToken(user._id),
-        });
+            res.json({
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                token,
+            });
+        } else {
+            res.status(401).json({ message: 'Invalid email or password' });
+        }
     } catch (error) {
-        console.error('Error logging in:', error);
-        res.status(500).json({ message: 'Server error' });
+        console.error('Error during login:', error);
+        res.status(500).json({ message: 'Server error', error });
     }
 };
 
