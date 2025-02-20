@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const RazorpayButton = ({ totalPrice }) => {
+const RazorpayButton = ({ totalPrice, cartItems, selectedAddress }) => {
     const navigate = useNavigate();
     const [razorpayLoaded, setRazorpayLoaded] = useState(false);
+    const token = localStorage.getItem('token'); // Get the token from localStorage
 
     useEffect(() => {
         const script = document.createElement('script');
@@ -31,6 +32,15 @@ const RazorpayButton = ({ totalPrice }) => {
             handler: async (response) => {
                 const paymentResult = await axios.post('http://localhost:3001/api/orders/verify-payment', response);
                 if (paymentResult.data.status === 'success') {
+                    await axios.post('http://localhost:3001/api/orders/place-order', {
+                        products: cartItems,
+                        address: selectedAddress,
+                        totalPrice
+                    }, {
+                        headers: {
+                            Authorization: `Bearer ${token}` // Include the token in the request headers
+                        }
+                    });
                     alert('Payment Successful');
                     navigate('/order-success');
                 } else {
