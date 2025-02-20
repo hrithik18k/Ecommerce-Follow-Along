@@ -75,10 +75,11 @@ const getUserProfile = async (req, res) => {
     }
 };
 
+
+
 const updateUserProfile = async (req, res) => {
     const { email } = req.params;
     const { name, addresses } = req.body;
-    const profilePicture = req.file ? req.file.path : null;
 
     try {
         const user = await User.findOne({ email });
@@ -87,13 +88,14 @@ const updateUserProfile = async (req, res) => {
         }
 
         user.name = name || user.name;
-        user.addresses = JSON.parse(addresses) || user.addresses;
-        if (profilePicture) {
-            user.profilePicture = profilePicture;
+        user.addresses = addresses ? JSON.parse(addresses) : user.addresses;
+
+        if (req.file) {
+            user.profilePicture = req.file.path;
         }
 
         await user.save();
-        res.status(200).json({ message: "Profile updated successfully", user });
+        res.status(200).json({ message: 'Profile updated successfully', user });
     } catch (error) {
         console.error('Error updating profile:', error);
         res.status(500).json({ message: 'Server error', error: error.message });
@@ -129,4 +131,24 @@ const addAddress = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, loginUser, getUserProfile, updateUserProfile, addAddress };
+const deleteAddress = async (req, res) => {
+    const { email } = req.params;
+    const { index } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        user.addresses.splice(index, 1);
+        await user.save();
+        res.status(200).json({ message: 'Address deleted successfully', user });
+    } catch (error) {
+        console.error('Error deleting address:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+
+module.exports = { registerUser, loginUser, getUserProfile, updateUserProfile, addAddress, deleteAddress };

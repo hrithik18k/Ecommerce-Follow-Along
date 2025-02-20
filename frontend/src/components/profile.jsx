@@ -51,6 +51,18 @@ const Profile = () => {
         }
     };
 
+    const handleDeleteAddress = async (index) => {
+        try {
+            const response = await axios.delete(`http://localhost:3001/api/users/profile/${email}/address`, {
+                data: { index }
+            });
+            setUser(response.data.user);
+        } catch (error) {
+            console.error('Error deleting address:', error);
+            alert('Error deleting address');
+        }
+    };
+
     if (!user) {
         return <div>Loading...</div>;
     }
@@ -69,6 +81,7 @@ const Profile = () => {
                     user.addresses.map((address, index) => (
                         <div key={index} style={addressStyle}>
                             <p>{address.country}, {address.city}, {address.address1}, {address.address2}, {address.zipCode}, {address.addressType}</p>
+                            <button onClick={() => handleDeleteAddress(index)} style={deleteButtonStyle}>Delete</button>
                         </div>
                     ))
                 ) : (
@@ -147,6 +160,9 @@ const addressStyle = {
     borderRadius: '4px',
     marginBottom: '10px',
     border: '1px solid #ccc',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
 };
 
 const formStyle = {
@@ -177,6 +193,15 @@ const buttonStyle = {
     borderRadius: '4px',
     border: 'none',
     backgroundColor: 'darkGreen',
+    color: 'white',
+    cursor: 'pointer',
+};
+
+const deleteButtonStyle = {
+    padding: '5px 10px',
+    borderRadius: '4px',
+    border: 'none',
+    backgroundColor: 'maroon',
     color: 'white',
     cursor: 'pointer',
 };

@@ -45,11 +45,11 @@ const MyOrdersPage = () => {
     };
 
     return (
-        <div style={{ padding: '20px', backgroundColor: '#E2D7AB', borderRadius: '8px', maxWidth: '800px', margin: '0 auto' }}>
-            <h1>My Orders</h1>
+        <div style={{ padding: '20px', backgroundImage: "url('/military-background.jpg')", borderRadius: '8px', maxWidth: '800px', margin: '0 auto' }}>
+            <h1 style={{ color: "white" }}>My Orders</h1>
             {orders.length > 0 ? (
                 orders.map(order => (
-                    <div key={order._id} style={{ padding: '10px', borderBottom: '1px solid #ccc', marginBottom: '10px' }}>
+                    <div key={order._id} style={{ padding: '10px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '8px', backgroundColor: '#E2D7AB', border:"2px solid white" }}>
                         <h2>Order ID: {order._id}</h2>
                         <p>Status: {order.status}</p>
                         <h3>Products:</h3>
