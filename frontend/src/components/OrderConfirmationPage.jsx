@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import RazorpayButton from './RazorpayButton';
@@ -71,7 +71,7 @@ const OrderConfirmationPage = () => {
                 </label>
             </div>
             {paymentMethod === 'ONLINE' && (
-                <RazorpayButton totalPrice={totalPrice} />
+                <RazorpayButton totalPrice={totalPrice} cartItems={cartItems} selectedAddress={selectedAddress} />
             )}
             {paymentMethod === 'COD' && (
                 <button onClick={handlePlaceOrder} style={{ marginTop: '20px', padding: '10px 20px', backgroundColor: 'darkGreen', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Place Order</button>
