@@ -289,4 +289,7 @@ Implement quantity selection with increment and decrement functionality, along w
   - Uses **Razorpay’s API** along with the client key to initialize and process transactions.
   - Securely handles payment details.
   - Updates the **order status** upon successful payment.
+ 
+  ## 🎯Milestone 30
+  -  Implemented Redux for global state management to store user email. Configured Redux store and wrapped the App component with the Provider.
 
