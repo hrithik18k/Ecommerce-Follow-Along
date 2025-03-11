@@ -32,5 +32,5 @@ main().then(() => {
 });
 
 async function main() {
-    await mongoose.connect(process.env.MONGODB_URI);
+    await mongoose.connect("mongodb+srv://hrithikvasanthram:hrithik@cluster0.rrsug.mongodb.net/Ecommerce-Follow-Along");
 }
