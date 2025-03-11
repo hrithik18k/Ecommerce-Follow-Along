@@ -17,14 +17,13 @@ import OrderSuccessPage from './components/OrderSuccessPage'; // Import OrderSuc
 import MyOrdersPage from './components/MyOrdersPage'; // Import MyOrdersPage component
 
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from 'react-redux';
 
 function App() {
     const [products, setProducts] = useState([]);
     const [user, setUser] = useState(null);
     const location = useLocation();
     const navigate = useNavigate();
-    const email = useSelector((state) => state.user.email);
+    const email = localStorage.getItem("email");
 
     const fetchProducts = async () => {
         try {
