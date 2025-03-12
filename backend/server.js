@@ -4,6 +4,7 @@ const productRoutes = require("./routes/productRoutrs");
 const userRoutes = require("./routes/userRoutes");
 const cors = require('cors');
 const dotenv = require('dotenv');
+const cookieParser = require('cookie-parser'); // Import cookie-parser
 const orderRoutes = require('./routes/orderRoutes');
 
 dotenv.config();
@@ -11,6 +12,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser()); // Use cookie-parser
 
 app.use("/api", productRoutes);
 app.use("/api/users", userRoutes);

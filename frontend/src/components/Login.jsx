@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
+import { useDispatch } from 'react-redux';
+import { setEmail } from '../store/userSlice';
 
 const Login = () => {
-    const [email, setEmail] = useState('');
+    const [email, setEmailInput] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         if (localStorage.getItem("email")) {
@@ -24,8 +27,8 @@ const Login = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                localStorage.setItem("token", data.token); // Store the token in localStorage
                 localStorage.setItem("email", email); // Store the email in localStorage
+                dispatch(setEmail(email)); // Set the email in the global state
                 navigate('/');
             } else {
                 const data = await response.json();
@@ -44,7 +47,7 @@ const Login = () => {
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <div>
                         <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#555' }}>Email:</label>
-                        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+                        <input type="email" value={email} onChange={(e) => setEmailInput(e.target.value)}
                         style={{ marginTop: '4px', padding: '8px', width: '100%', border: '1px solid #ccc', borderRadius: '4px' }} required />
                     </div>
                     <div>
