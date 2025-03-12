@@ -1,6 +1,7 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
-const jwt = require('jsonwebtoken'); 
+const jwt = require('jsonwebtoken');
+
 const registerUser = async (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -40,8 +41,13 @@ const loginUser = async (req, res) => {
         const user = await User.findOne({ email });
 
         if (user && (await bcrypt.compare(password, user.password))) {
-            const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+            const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
                 expiresIn: '30d',
+            });
+
+            res.cookie('token', token, {
+                httpOnly: true,
+                maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
             });
 
             res.json({
@@ -74,8 +80,6 @@ const getUserProfile = async (req, res) => {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
-
-
 
 const updateUserProfile = async (req, res) => {
     const { email } = req.params;
@@ -149,6 +153,5 @@ const deleteAddress = async (req, res) => {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
-
 
 module.exports = { registerUser, loginUser, getUserProfile, updateUserProfile, addAddress, deleteAddress };
