@@ -16,7 +16,7 @@ const placeOrder = async (req, res) => {
             products,
             address,
             totalPrice
-        });
+        });  
 
         await order.save();
         res.status(201).json({ message: 'Order placed successfully', order });
