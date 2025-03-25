@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import RazorpayButton from './RazorpayButton';
+import { BASE_URL } from '../config'; // Import the BASE_URL
 
 const OrderConfirmationPage = () => {
     const location = useLocation();
@@ -12,7 +13,7 @@ const OrderConfirmationPage = () => {
 
     const handlePlaceOrder = async () => {
         try {
-            const response = await axios.post('http://localhost:3001/api/orders/place-order', {
+            const response = await axios.post(`${BASE_URL}/api/orders/place-order`, { 
                 products: cartItems,
                 address: selectedAddress,
                 totalPrice
@@ -39,7 +40,7 @@ const OrderConfirmationPage = () => {
             <ul style={{ listStyleType: 'none', padding: '0' }}>
                 {cartItems.map(item => (
                     <li key={item.productId._id} style={{ padding: '10px', borderBottom: '1px solid #ccc', display: 'flex', alignItems: 'center' }}>
-                        <img src={`http://localhost:3001/${item.productId.imageUrl[0]}`} alt={item.productId.name} style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '20px' }} />
+                        <img src={`${BASE_URL}/${item.productId.imageUrl[0]}`} alt={item.productId.name} style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '20px' }} />
                         <div>
                             <span>{item.productId.name}</span> - <span>Quantity: {item.quantity}</span> - <span>Price: ${item.productId.price}</span>
                         </div>

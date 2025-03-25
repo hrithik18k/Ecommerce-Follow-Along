@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
 import axios from 'axios';
+import { BASE_URL } from '../config';
 
 function Card({ id, name, image, description, price, showEditButton, onDelete, showDetailsLink, showAddToCartButton = true }) {
     const [isHovered, setIsHovered] = useState(false);
@@ -18,7 +19,7 @@ function Card({ id, name, image, description, price, showEditButton, onDelete, s
         }
 
         try {
-            const response = await axios.post('http://localhost:3001/api/users/cart', { email: userEmail, productId: id, quantity: 1 });
+            const response = await axios.post(`${BASE_URL}/api/users/cart`, { email: userEmail, productId: id, quantity: 1 });
             if (response.status === 200) {
                 alert('Product added to cart');
             } else {
@@ -31,7 +32,7 @@ function Card({ id, name, image, description, price, showEditButton, onDelete, s
 
     const cardContent = (
         <>
-            <img src={`http://localhost:3001/${image}`} alt={name} style={{ width: '100%', height: 'auto', borderRadius: '8px 8px 0 0' }} />
+            <img src={`${BASE_URL}/${image}`} alt={name} style={{ width: '100%', height: 'auto', borderRadius: '8px 8px 0 0' }} />
             <h3>{name}</h3>
             <p>{description}</p>
             <p><b>{price.toFixed(2)}M $</b></p>

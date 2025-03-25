@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
+import { BASE_URL } from '../config';
 
 const SignUp = () => {
     const [name, setName] = useState('');
@@ -26,7 +27,7 @@ const SignUp = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:3001/api/users/register', formData, {
+            const response = await axios.post(`${BASE_URL}/api/users/register`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }

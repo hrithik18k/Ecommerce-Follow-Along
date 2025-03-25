@@ -15,6 +15,7 @@ import SelectAddressPage from './components/SelectAddressPage'; // Import Select
 import OrderConfirmationPage from './components/OrderConfirmationPage'; // Import OrderConfirmationPage component
 import OrderSuccessPage from './components/OrderSuccessPage'; // Import OrderSuccessPage component
 import MyOrdersPage from './components/MyOrdersPage'; // Import MyOrdersPage component
+import { BASE_URL } from '../src/config';
 
 import { Link, useNavigate } from "react-router-dom";
 
@@ -27,16 +28,16 @@ function App() {
 
     const fetchProducts = async () => {
         try {
-            let res = await axios.get('http://localhost:3001/api/products');
+            let res = await axios.get(`${BASE_URL}/api/products`); // Correct URL
             setProducts(res.data);
         } catch (error) {
             console.log("Error: ", error.message);
         }
     };
-
+    
     const fetchUserProfile = async () => {
         try {
-            const response = await axios.get(`http://localhost:3001/api/users/profile/${email}`);
+            const response = await axios.get(`${BASE_URL}/api/users/profile/${email}`); // Correct URL
             setUser(response.data);
         } catch (error) {
             console.error('Error fetching user profile:', error);
@@ -72,7 +73,7 @@ function App() {
                                 <Link to={'/my-orders'} className="nav-link">My Orders</Link>
                                 {user && (
                                     <Link to={'/profile'} className="profile-info">
-                                        <img src={`http://localhost:3001/${user.profilePicture}`} alt="Profile" className="profile-image" />
+                                        <img src={`${BASE_URL}/${user.profilePicture}`} alt="Profile" className="profile-image" />
                                         <span className="profile-name">{user.name}</span>
                                     </Link>
                                 )}
@@ -100,8 +101,8 @@ function App() {
                 <Route path="/add-address" element={<AddAddressForm />} />
                 <Route path="/select-address" element={<SelectAddressPage />} />
                 <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
-                <Route path="/order-success" element={<OrderSuccessPage />} /> {/* Add this route */}
-                <Route path="/my-orders" element={<MyOrdersPage />} /> {/* Add My Orders route */}
+                <Route path="/order-success" element={<OrderSuccessPage />} />
+                <Route path="/my-orders" element={<MyOrdersPage />} />
             </Routes>
         </div>
     );
