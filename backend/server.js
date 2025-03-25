@@ -52,8 +52,6 @@ main()
         console.error("Error connecting to DB:", err);
     });
 
-async function main() { 
-    await mongoose.connect(process.env.MONGO_URI, {
-        serverSelectionTimeoutMS: 30000, // Timeout after 30 seconds
-    });
-}
+    async function main() {
+        await mongoose.connect("mongodb+srv://hrithikvasanthram:hrithik@cluster0.rrsug.mongodb.net/Ecommerce-Follow-Along");
+    }
