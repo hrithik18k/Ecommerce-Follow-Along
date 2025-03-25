@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { BASE_URL } from '../config';
 
 const MyOrdersPage = () => {
     const [orders, setOrders] = useState([]);
@@ -8,7 +9,7 @@ const MyOrdersPage = () => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/orders/user-orders', {
+                const response = await axios.get(`${BASE_URL}/api/orders/user-orders`, {
                     headers: {
                         Authorization: `Bearer ${token}` // Include the token in the request headers
                     }
@@ -28,7 +29,7 @@ const MyOrdersPage = () => {
 
     const handleCancelOrder = async (orderId) => {
         try {
-            const response = await axios.patch(`http://localhost:3001/api/orders/${orderId}/cancel`, {}, {
+            const response = await axios.patch(`${BASE_URL}/api/orders/${orderId}/cancel`, {}, {
                 headers: {
                     Authorization: `Bearer ${token}` // Include the token in the request headers
                 }

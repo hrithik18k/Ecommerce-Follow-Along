@@ -13,18 +13,24 @@ exports.createOrder = async (req, res) => {
         const order = await razorpay.orders.create({ amount, currency, receipt });
         res.json(order);
     } catch (error) {
-        res.status(500).send(error);
+        console.error('Error creating Razorpay order:', error); // Add logging
+        res.status(500).json({ message: 'Error creating Razorpay order', error });
     }
 };
 
 exports.verifyPayment = (req, res) => {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
-    const hmac = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET);
-    hmac.update(razorpay_order_id + "|" + razorpay_payment_id);
-    const generatedSignature = hmac.digest('hex');
-    if (generatedSignature === razorpay_signature) {
-        res.json({ status: 'success' });
-    } else {
-        res.status(400).json({ status: 'failure' });
+    try {
+        const hmac = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET);
+        hmac.update(razorpay_order_id + "|" + razorpay_payment_id);
+        const generatedSignature = hmac.digest('hex');
+        if (generatedSignature === razorpay_signature) {
+            res.json({ status: 'success' });
+        } else {
+            res.status(400).json({ status: 'failure', message: 'Invalid signature' });
+        }
+    } catch (error) {
+        console.error('Error verifying Razorpay payment:', error); // Add logging
+        res.status(500).json({ message: 'Error verifying Razorpay payment', error });
     }
 };
