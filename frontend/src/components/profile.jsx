@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { BASE_URL } from '../config';
+
 
 const Profile = () => {
     const [user, setUser] = useState(null);
@@ -12,7 +14,7 @@ const Profile = () => {
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                const response = await axios.get(`http://localhost:3001/api/users/profile/${email}`);
+                const response = await axios.get(`${BASE_URL}/api/users/profile/${email}`);
                 setUser(response.data);
             } catch (error) {
                 console.error('Error fetching user profile:', error);
@@ -38,7 +40,7 @@ const Profile = () => {
         }
 
         try {
-            const response = await axios.put(`http://localhost:3001/api/users/profile/${email}`, formData, {
+            const response = await axios.put(`${BASE_URL}/api/users/profile/${email}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -53,7 +55,7 @@ const Profile = () => {
 
     const handleDeleteAddress = async (index) => {
         try {
-            const response = await axios.delete(`http://localhost:3001/api/users/profile/${email}/address`, {
+            const response = await axios.delete(`${BASE_URL}/api/users/profile/${email}/address`, {
                 data: { index }
             });
             setUser(response.data.user);
@@ -70,7 +72,7 @@ const Profile = () => {
     return (
         <div style={profileContainerStyle}>
             <div style={profileSectionStyle}>
-                <img src={`http://localhost:3001/${user.profilePicture}`} alt="Profile" style={profileImageStyle} />
+                <img src={`${BASE_URL}/${user.profilePicture}`} alt="Profile" style={profileImageStyle} />
                 <h2>{user.name}</h2>
                 <p>{user.email}</p>
                 <button onClick={() => setIsEditing(true)} style={buttonStyle}>Edit Profile</button>

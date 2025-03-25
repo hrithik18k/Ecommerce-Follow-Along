@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router';
+import { BASE_URL } from '../config';
 
 function ProductForm({ setProducts }) {
     const { id } = useParams();
@@ -17,7 +18,7 @@ function ProductForm({ setProducts }) {
         if (id) {
             const fetchProduct = async () => {
                 try {
-                    const response = await axios.get(`http://localhost:3001/api/products/${id}`);
+                    const response = await axios.get(`${BASE_URL}/api/products/${id}`);
                     const product = response.data;
                     setName(product.name);
                     setDescription(product.description);
@@ -52,13 +53,13 @@ function ProductForm({ setProducts }) {
         try {
             let response;
             if (id) {
-                response = await axios.put(`http://localhost:3001/api/products/${id}`, formData, {
+                response = await axios.put(`${BASE_URL}/api/products/${id}`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
                 });
             } else {
-                response = await axios.post('http://localhost:3001/api/products', formData, {
+                response = await axios.post(`${BASE_URL}/api/products`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -108,7 +109,7 @@ function ProductForm({ setProducts }) {
                     </label>
                     <div style={previewContainerStyle}>
                         {existingImages.length > 0 && existingImages.map((image, index) => (
-                            <img key={index} src={`http://localhost:3001/${image}`} alt={`Preview ${index}`} style={previewImageStyle} />
+                            <img key={index} src={`${BASE_URL}/${image}`} alt={`Preview ${index}`} style={previewImageStyle} />
                         ))}
                         {images.length > 0 && images.map((image, index) => (
                             <img key={index} src={URL.createObjectURL(image)} alt={`Preview ${index}`} style={previewImageStyle} />

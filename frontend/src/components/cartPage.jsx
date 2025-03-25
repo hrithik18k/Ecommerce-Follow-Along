@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { BASE_URL } from '../config';
 
 const CartPage = () => {
     const [cartItems, setCartItems] = useState([]);
@@ -11,7 +12,7 @@ const CartPage = () => {
     useEffect(() => {
         const fetchCartItems = async () => {
             try {
-                const response = await axios.get(`http://localhost:3001/api/users/cart/${userEmail}`);
+                const response = await axios.get(`${BASE_URL}/api/users/cart/${userEmail}`);
                 const cart = response.data.cart || [];
                 setCartItems(cart);
                 calculateTotalPrice(cart);
@@ -25,7 +26,7 @@ const CartPage = () => {
 
     const handleQuantityChange = async (productId, action) => {
         try {
-            const response = await axios.post(`http://localhost:3001/api/users/cart/quantity`, { email: userEmail, productId, action });
+            const response = await axios.post(`${BASE_URL}/api/users/cart/quantity`, { email: userEmail, productId, action });
             if (response.status === 200) {
                 const updatedCart = response.data.cart;
                 setCartItems(updatedCart);
@@ -40,7 +41,7 @@ const CartPage = () => {
 
     const handleDelete = async (productId) => {
         try {
-            const response = await axios.delete(`http://localhost:3001/api/users/cart/${userEmail}/${productId}`);
+            const response = await axios.delete(`${BASE_URL}/api/users/cart/${userEmail}/${productId}`);
             if (response.status === 200) {
                 const updatedCart = response.data.cart;
                 setCartItems(updatedCart);
@@ -75,7 +76,7 @@ const CartPage = () => {
                     cartItems.map(item => (
                         <li key={`${item.productId?._id}-${item.quantity}`} style={{ display: 'flex', alignItems: 'center', padding: '10px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '8px', backgroundColor: '#E2D7AB', border:"2px solid white" }}>
                             {item.productId?.imageUrl && item.productId.imageUrl.length > 0 && (
-                                <img src={`http://localhost:3001/${item.productId.imageUrl[0]}`} alt={item.productId?.name} style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '20px' }} />
+                                <img src={`${BASE_URL}/${item.productId.imageUrl[0]}`} alt={item.productId?.name} style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '20px' }} />
                             )}
                             <div style={{ flex: '1' }}>
                                 <span style={{ fontSize: '18px', fontWeight: 'bold' }}>{item.productId?.name || 'Product not available'}</span>

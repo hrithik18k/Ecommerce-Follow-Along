@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './address.css'; // Import the CSS file
+import { BASE_URL } from '../config';
 
 const AddAddressForm = () => {
     const [address, setAddress] = useState({
@@ -24,7 +25,7 @@ const AddAddressForm = () => {
         e.preventDefault();
         try {
             const email = localStorage.getItem("email");
-            await axios.put(`http://localhost:3001/api/users/profile/${email}/address`, address);
+            await axios.put(`${BASE_URL}/api/users/profile/${email}/address`, address);
             navigate('/profile');
         } catch (error) {
             console.error('Error updating address:', error);

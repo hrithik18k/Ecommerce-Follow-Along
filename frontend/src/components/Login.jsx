@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { setEmail } from '../store/userSlice';
+import { BASE_URL } from '../config';
 
 const Login = () => {
     const [email, setEmailInput] = useState('');
@@ -19,7 +20,7 @@ const Login = () => {
         e.preventDefault();
         
         try {
-            const response = await fetch('http://localhost:3001/api/users/login', { 
+            const response = await fetch(`${BASE_URL}/api/users/login`, { 
                 method: 'POST', 
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })

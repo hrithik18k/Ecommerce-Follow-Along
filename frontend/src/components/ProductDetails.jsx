@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import axios from 'axios';
+import { BASE_URL } from '../config';
 
 const ProductDetails = () => {
     const { id } = useParams();
@@ -11,7 +12,7 @@ const ProductDetails = () => {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const response = await axios.get(`http://localhost:3001/api/products/${id}`);
+                const response = await axios.get(`${BASE_URL}/api/products/${id}`);
                 setProduct(response.data);
             } catch (error) {
                 console.error("Error fetching product:", error);
@@ -27,7 +28,7 @@ const ProductDetails = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:3001/api/users/cart', {
+            const response = await axios.post(`${BASE_URL}/api/users/cart`, {
                 email: userEmail,
                 productId: product._id,
                 quantity: parseInt(quantity)
@@ -49,7 +50,7 @@ const ProductDetails = () => {
 
     return (
         <div style={{ padding: '20px', backgroundColor: '#E2D7AB', borderRadius: '8px', textAlign: 'left' }}>
-            <img src={`http://localhost:3001/${product.imageUrl[0]}`} alt={product.name} style={{ width: '100%', height: 'auto', borderRadius: '8px' }} />
+            <img src={`${BASE_URL}/${product.imageUrl[0]}`} alt={product.name} style={{ width: '100%', height: 'auto', borderRadius: '8px' }} />
             <h2>Name: {product.name}</h2>
             <p>Description: {product.description}</p>
             <p>Price: <b>{product.price.toFixed(2)}M $</b></p>
