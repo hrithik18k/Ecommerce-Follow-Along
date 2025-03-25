@@ -15,7 +15,9 @@ const app = express();
 
 // CORS configuration
 const corsOptions = {
-    origin: ["https://ecommerce-follow-along-tau.vercel.app/"], // Replace with your deployed frontend URL
+    origin: ["https://ecommerce-follow-along-tau.vercel.app",
+            "http://localhost:5173"
+    ], 
     credentials: true, // Allow cookies to be sent
 };
 app.use(cors(corsOptions));
@@ -50,7 +52,8 @@ main()
         console.error("Error connecting to DB:", err);
     });
 
-async function main() {
+async function main() { 
     await mongoose.connect(process.env.MONGO_URI, {
+        serverSelectionTimeoutMS: 30000, // Timeout after 30 seconds
     });
 }
