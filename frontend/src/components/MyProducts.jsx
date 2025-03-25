@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Card from "../homepage/card";
 import axios from 'axios';
+import { BASE_URL } from '../config';
 
 const MyProducts = ({ products }) => {
     const [myProducts, setMyProducts] = useState([]);
@@ -16,12 +17,12 @@ const MyProducts = ({ products }) => {
 
     const handleDelete = async (id) => {
         try {
-            const response = await axios.delete(`http://localhost:3001/api/products/${id}`);
+            const response = await axios.delete(`${BASE_URL}/api/products/${id}`);
             if (response.data.success) {
                 setMyProducts(myProducts.filter(product => product._id !== id));
                 alert(response.data.message);
             }
-            const response1 = await axios.delete(`http://localhost:3001/api/users/cart/${email}/${id}`);
+            const response1 = await axios.delete(`${BASE_URL}/api/users/cart/${email}/${id}`);
             if (response1.data.success) {
                 alert(response.data.message);
             }

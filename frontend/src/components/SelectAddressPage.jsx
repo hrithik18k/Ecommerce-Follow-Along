@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { BASE_URL } from '../config';
 
 const SelectAddressPage = () => {
     const [addresses, setAddresses] = useState([]);
@@ -13,7 +14,7 @@ const SelectAddressPage = () => {
     useEffect(() => {
         const fetchAddresses = async () => {
             try {
-                const response = await axios.get(`http://localhost:3001/api/users/profile/${userEmail}`);
+                const response = await axios.get(`${BASE_URL}/api/users/profile/${userEmail}`);
                 setAddresses(response.data.addresses || []);
             } catch (error) {
                 console.error('Error fetching addresses:', error);
