@@ -15,13 +15,15 @@ const app = express();
 
 // CORS configuration
 const corsOptions = {
-    origin: ["https://ecommerce-follow-along-tau.vercel.app",
-            "http://localhost:5173"
-    ], 
+    origin: [
+        "https://ecommerce-follow-along-iota.vercel.app", // Deployed frontend
+        "http://localhost:5173" // Development frontend
+    ],
     credentials: true, // Allow cookies to be sent
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], // Allow specific HTTP methods
+    allowedHeaders: ["Content-Type", "Authorization"], // Allow specific headers
 };
 app.use(cors(corsOptions));
-
 // Middleware
 app.use(express.json());
 app.use(cookieParser()); // Parse cookies
