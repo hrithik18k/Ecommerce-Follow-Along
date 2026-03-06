@@ -16,8 +16,9 @@ const app = express();
 // CORS configuration
 const corsOptions = {
     origin: [
-        "https://ecommerce-follow-along-iota.vercel.app", // Deployed frontend
-        "http://localhost:5173" // Development frontend
+        "https://luxemart-ayw6.onrender.com",
+        "https://luxemart-frontend-final.onrender.com",
+        "http://localhost:5173"
     ],
     credentials: true, // Allow cookies to be sent
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], // Allow specific HTTP methods
@@ -54,6 +55,6 @@ main()
         console.error("Error connecting to DB:", err);
     });
 
-    async function main() {
-        await mongoose.connect("mongodb+srv://hrithikvasanthram:hrithik@cluster0.rrsug.mongodb.net/Ecommerce-Follow-Along");
-    }
+async function main() {
+    await mongoose.connect(process.env.MONGODB_URI);
+}
