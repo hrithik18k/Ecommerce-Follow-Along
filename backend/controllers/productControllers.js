@@ -1,10 +1,10 @@
 const Product = require('../models/productModels');
-const User = require('../models/userModel'); 
+const User = require('../models/userModel');
 const path = require('path');
 
 const createProduct = async (req, res) => {
     try {
-        const { name, description, price, userEmail, stock } = req.body;
+        const { name, description, price, userEmail, stock, category } = req.body;
         const imageUrls = req.files.map(file => path.join('uploads', file.filename));
 
         const newProduct = new Product({
@@ -13,7 +13,8 @@ const createProduct = async (req, res) => {
             price,
             userEmail,
             imageUrl: imageUrls,
-            stock
+            stock,
+            category
         });
 
         await newProduct.save();
@@ -29,7 +30,7 @@ const getAllProducts = async (req, res) => {
         const products = await Product.find();
         res.status(200).json(products);
     } catch (error) {
-        console.error('Error fetching products:', error); 
+        console.error('Error fetching products:', error);
         res.status(500).json({ message: 'Error fetching products', error: error.message });
     }
 };
@@ -40,7 +41,7 @@ const getProductsByUserEmail = async (req, res) => {
         const products = await Product.find({ userEmail: email });
         res.status(200).json(products);
     } catch (error) {
-        console.error('Error fetching products by user email:', error); 
+        console.error('Error fetching products by user email:', error);
         res.status(500).json({ message: 'Error fetching products', error: error.message });
     }
 };
@@ -63,7 +64,7 @@ const getProductById = async (req, res) => {
 const editProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, description, price, userEmail, stock } = req.body;
+        const { name, description, price, userEmail, stock, category } = req.body;
         let imageUrls = req.files.map(file => path.join('uploads', file.filename));
 
         if (imageUrls.length === 0) {
@@ -73,7 +74,7 @@ const editProduct = async (req, res) => {
 
         const updatedProduct = await Product.findByIdAndUpdate(
             id,
-            { name, description, price, userEmail, imageUrl: imageUrls, stock },
+            { name, description, price, userEmail, imageUrl: imageUrls, stock, category },
             { new: true }
         );
 
@@ -109,4 +110,4 @@ const deletedProduct = async (req, res) => {
     }
 };
 
-module.exports = { createProduct, getAllProducts, getProductsByUserEmail ,editProduct,getProductById, deletedProduct };
+module.exports = { createProduct, getAllProducts, getProductsByUserEmail, editProduct, getProductById, deletedProduct };

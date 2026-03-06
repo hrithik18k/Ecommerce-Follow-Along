@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { BASE_URL } from '../config';
 
 const SelectAddressPage = () => {
     const [addresses, setAddresses] = useState([]);
@@ -14,19 +13,14 @@ const SelectAddressPage = () => {
     useEffect(() => {
         const fetchAddresses = async () => {
             try {
-                const response = await axios.get(`${BASE_URL}/api/users/profile/${userEmail}`);
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/users/profile/${userEmail}`);
                 setAddresses(response.data.addresses || []);
             } catch (error) {
                 console.error('Error fetching addresses:', error);
             }
         };
-
         fetchAddresses();
     }, [userEmail]);
-
-    const handleSelectAddress = (address) => {
-        setSelectedAddress(address);
-    };
 
     const handleConfirmOrder = () => {
         if (selectedAddress) {
@@ -37,21 +31,34 @@ const SelectAddressPage = () => {
     };
 
     return (
-        <div style={{ padding: '20px', backgroundColor: '#E2D7AB', borderRadius: '8px', maxWidth: '800px', margin: '0 auto' }}>
-            <h1>Select Delivery Address</h1>
-            <ul style={{ listStyleType: 'none', padding: '0' }}>
-                {addresses.length > 0 ? (
-                    addresses.map((address, index) => (
-                        <li key={index} style={{ padding: '10px', marginBottom: '10px', border: '1px solid #ccc', borderRadius: '8px', backgroundColor: selectedAddress === address ? '#d1c49a' : '#fff' }}>
-                            <input type="radio" name="address" value={index} onChange={() => handleSelectAddress(address)} />
-                            <span>{address.country}, {address.city}, {address.address1}, {address.address2}, {address.zipCode}, {address.addressType}</span>
-                        </li>
-                    ))
-                ) : (
-                    <p>No addresses found. Please add an address in your profile.</p>
-                )}
-            </ul>
-            <button onClick={handleConfirmOrder} style={{ marginTop: '20px', padding: '10px 20px', backgroundColor: 'darkGreen', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Confirm Order</button>
+        <div className="page-container" style={{ maxWidth: '800px', margin: '0 auto' }}>
+            <h1 className="page-title">Select Delivery Address</h1>
+            <p className="page-subtitle">Choose where you'd like your order delivered</p>
+
+            {addresses.length > 0 ? (
+                <div>
+                    {addresses.map((address, index) => (
+                        <div key={index} className={`address-select-card ${selectedAddress === address ? 'selected' : ''}`} onClick={() => setSelectedAddress(address)}>
+                            <input type="radio" name="address" className="address-radio" checked={selectedAddress === address} onChange={() => setSelectedAddress(address)} />
+                            <div className="address-text">
+                                <strong>{address.addressType || 'Address'}</strong><br />
+                                {address.address1}, {address.address2 && `${address.address2}, `}
+                                {address.city}, {address.country} - {address.zipCode}
+                            </div>
+                        </div>
+                    ))}
+                    <button onClick={handleConfirmOrder} className="btn btn-primary btn-full btn-lg" style={{ marginTop: '1.5rem' }}>
+                        Continue to Confirmation
+                    </button>
+                </div>
+            ) : (
+                <div className="empty-state">
+                    <div className="empty-state-icon">—</div>
+                    <h3 className="empty-state-title">No addresses found</h3>
+                    <p className="empty-state-text">Please add an address in your profile first</p>
+                    <button onClick={() => navigate('/add-address')} className="btn btn-primary" style={{ marginTop: '1.5rem' }}>Add Address</button>
+                </div>
+            )}
         </div>
     );
 };
