@@ -12,20 +12,20 @@ const addressSchema = new mongoose.Schema({
 
 
 const userSchema = new mongoose.Schema({
-    name:{
-        type:String,
-        required:true,
+    name: {
+        type: String,
+        required: true,
     },
 
-    email:{
-        type:String,
-        required:true,
-        unique:true,
+    email: {
+        type: String,
+        required: true,
+        unique: true,
     },
 
-    password:{
-        type:String,
-        required:true,
+    password: {
+        type: String,
+        required: true,
     },
 
     role: {
@@ -34,8 +34,8 @@ const userSchema = new mongoose.Schema({
         default: 'buyer',
     },
 
-    profilePicture:{
-        type:String,
+    profilePicture: {
+        type: String,
     },
     addresses: [addressSchema],
     cart: [
@@ -43,6 +43,9 @@ const userSchema = new mongoose.Schema({
             productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
             quantity: { type: Number, default: 1 }
         }
+    ],
+    wishlist: [
+        { type: mongoose.Schema.Types.ObjectId, ref: 'Product' }
     ]
 });
 

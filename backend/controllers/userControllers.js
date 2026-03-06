@@ -1,6 +1,8 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
+const Order = require('../models/order');
+const Product = require('../models/productModels');
 
 const registerUser = async (req, res) => {
     try {
@@ -78,7 +80,7 @@ const getUserProfile = async (req, res) => {
     const { email } = req.params;
 
     try {
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email }).populate('wishlist');
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -208,5 +210,71 @@ const updateUserRole = async (req, res) => {
     }
 };
 
+const toggleWishlist = async (req, res) => {
+    const { email } = req.params;
+    const { productId } = req.body;
 
-module.exports = { registerUser, loginUser, getUserProfile, updateUserProfile, addAddress, deleteAddress, getAllUsers, updateUserRole };
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const isLoved = user.wishlist.includes(productId);
+
+        if (isLoved) {
+            // Remove from wishlist
+            user.wishlist = user.wishlist.filter(id => id.toString() !== productId);
+        } else {
+            // Add to wishlist
+            user.wishlist.push(productId);
+        }
+
+        await user.save();
+        await user.populate('wishlist');
+
+        res.status(200).json({ message: 'Wishlist updated successfully', wishlist: user.wishlist });
+    } catch (error) {
+        console.error('Error toggling wishlist:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+const getWishlist = async (req, res) => {
+    const { email } = req.params;
+
+    try {
+        const user = await User.findOne({ email }).populate('wishlist');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json(user.wishlist);
+    } catch (error) {
+        console.error('Error fetching wishlist:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+const getAdminStats = async (req, res) => {
+    try {
+        const totalUsers = await User.countDocuments();
+        const totalOrders = await Order.countDocuments();
+        const totalProducts = await Product.countDocuments();
+
+        const orders = await Order.find({ status: { $ne: 'Canceled' } });
+        const totalRevenue = orders.reduce((acc, order) => acc + order.totalPrice, 0);
+
+        res.status(200).json({
+            totalUsers,
+            totalOrders,
+            totalProducts,
+            totalRevenue
+        });
+    } catch (error) {
+        console.error('Error fetching admin stats:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+module.exports = { registerUser, loginUser, getUserProfile, updateUserProfile, addAddress, deleteAddress, getAllUsers, updateUserRole, toggleWishlist, getWishlist, getAdminStats };

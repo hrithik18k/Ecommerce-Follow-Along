@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 const ProductDetails = () => {
     const { id } = useParams();
     const [product, setProduct] = useState(null);
     const [quantity, setQuantity] = useState(1);
     const [selectedImage, setSelectedImage] = useState(0);
-    const userEmail = localStorage.getItem("email");
+    const [rating, setRating] = useState(5);
+    const [comment, setComment] = useState("");
+    const [isWishlisted, setIsWishlisted] = useState(false);
+
+    const userEmail = useSelector(state => state.user.email);
+    const token = useSelector(state => state.user.token);
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -18,8 +24,21 @@ const ProductDetails = () => {
                 console.error("Error fetching product:", error);
             }
         };
+
+        const checkWishlist = async () => {
+            if (!userEmail) return;
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/users/wishlist/${userEmail}`);
+                const wishlistedIds = response.data.map(product => typeof product === 'string' ? product : product._id);
+                setIsWishlisted(wishlistedIds.includes(id));
+            } catch (error) {
+                console.error("Error checking wishlist", error);
+            }
+        };
+
         fetchProduct();
-    }, [id]);
+        checkWishlist();
+    }, [id, userEmail]);
 
     const handleAddToCart = async () => {
         if (!userEmail) { alert('Please sign in to add to cart'); return; }
@@ -40,6 +59,33 @@ const ProductDetails = () => {
     const getImageUrl = (url) => {
         if (!url) return '';
         return url.startsWith('http') ? url : `${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/${url}`;
+    };
+
+    const handleWishlistToggle = async () => {
+        if (!userEmail) { alert('Please sign in to wishlist products'); return; }
+        try {
+            await axios.post(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/users/wishlist/${userEmail}`, { productId: id });
+            setIsWishlisted(!isWishlisted);
+        } catch (error) {
+            console.error('Error toggling wishlist', error);
+        }
+    };
+
+    const handleReviewSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const config = { headers: { Authorization: `Bearer ${token}` } };
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/products/${id}/reviews`, { rating, comment }, config);
+            if (response.status === 201) {
+                alert("Review submitted successfully");
+                setComment("");
+                // Reload product to show recent review
+                const productRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/products/${id}`);
+                setProduct(productRes.data);
+            }
+        } catch (error) {
+            alert(error.response?.data?.message || 'Error submitting review');
+        }
     };
 
     if (!product) {
@@ -81,10 +127,65 @@ const ProductDetails = () => {
                         <label style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: '500' }}>Quantity:</label>
                         <input type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} min="1" max={product.stock} className="quantity-input" />
                     </div>
-                    <button onClick={handleAddToCart} className="btn btn-primary btn-lg" disabled={product.stock === 0} style={{ alignSelf: 'flex-start' }}>
-                        Add to Cart
-                    </button>
+                    <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                        <button onClick={handleAddToCart} className="btn btn-primary btn-lg" disabled={product.stock === 0}>
+                            Add to Cart
+                        </button>
+                        <button onClick={handleWishlistToggle} className="btn btn-secondary btn-lg" style={{ background: 'transparent', border: '1px solid var(--border-color)', color: isWishlisted ? 'red' : 'var(--text-color)' }}>
+                            {isWishlisted ? '♥ Wishlisted' : '♡ Add to Wishlist'}
+                        </button>
+                    </div>
                 </div>
+            </div>
+
+            <div className="product-reviews-section" style={{ marginTop: '3rem', padding: '2rem', background: 'var(--card-bg)', borderRadius: '15px' }}>
+                <h2 style={{ marginBottom: '1.5rem' }}>Reviews ({product.numReviews}) - ⭐ {(product.rating || 0).toFixed(1)}</h2>
+
+                <div className="reviews-list" style={{ marginBottom: '2rem' }}>
+                    {product.reviews && product.reviews.length === 0 ? (
+                        <p style={{ color: 'var(--text-secondary)' }}>No reviews yet. Be the first to review this product!</p>
+                    ) : (
+                        product.reviews?.map(review => (
+                            <div key={review._id} style={{ padding: '1rem', borderBottom: '1px solid var(--border-color)' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                                    <strong>{review.name}</strong>
+                                    <span style={{ color: '#ffb400' }}>{'⭐'.repeat(review.rating)}</span>
+                                </div>
+                                <p style={{ color: 'var(--text-secondary)' }}>{review.comment}</p>
+                            </div>
+                        ))
+                    )}
+                </div>
+
+                {userEmail && (
+                    <div className="write-review">
+                        <h3>Write a Customer Review</h3>
+                        <form onSubmit={handleReviewSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' }}>
+                            <div className="form-group">
+                                <label>Rating</label>
+                                <select value={rating} onChange={(e) => setRating(e.target.value)} className="form-input" style={{ width: '100px' }}>
+                                    <option value="1">1 - Poor</option>
+                                    <option value="2">2 - Fair</option>
+                                    <option value="3">3 - Good</option>
+                                    <option value="4">4 - Very Good</option>
+                                    <option value="5">5 - Excellent</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label>Comment</label>
+                                <textarea
+                                    value={comment}
+                                    onChange={(e) => setComment(e.target.value)}
+                                    className="form-input"
+                                    rows="4"
+                                    required
+                                    placeholder="Share your thoughts about this product..."
+                                />
+                            </div>
+                            <button type="submit" className="btn btn-primary" style={{ alignSelf: 'flex-start' }}>Submit Review</button>
+                        </form>
+                    </div>
+                )}
             </div>
         </div>
     );
