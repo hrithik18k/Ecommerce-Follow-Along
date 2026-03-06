@@ -66,3 +66,4 @@ LuxeMart is a full-stack e-commerce platform that allows users to browse high-en
 
 ---
 *Built with ❤️ for a modern shopping experience.*
+
