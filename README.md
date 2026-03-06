@@ -1,4 +1,4 @@
-# LuxeMart (formerly WAR-MART)
+# LuxeMart
 
 A premium, modern e-commerce application designed with a stunning glassmorphism aesthetic. LuxeMart provides a seamless shopping experience for buyers and a powerful management dashboard for sellers and admins.
 

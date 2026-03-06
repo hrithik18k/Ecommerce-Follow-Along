@@ -1,5 +1,6 @@
 const Product = require('../models/productModels');
 const User = require('../models/userModel');
+const Order = require('../models/order');
 const path = require('path');
 
 const createProduct = async (req, res) => {
@@ -110,4 +111,55 @@ const deletedProduct = async (req, res) => {
     }
 };
 
-module.exports = { createProduct, getAllProducts, getProductsByUserEmail, editProduct, getProductById, deletedProduct };
+const createProductReview = async (req, res) => {
+    try {
+        const { rating, comment } = req.body;
+        const productId = req.params.id;
+        const user = req.user; // from protect middleware
+
+        // Check if the user has purchased this product
+        const order = await Order.findOne({
+            user: user._id,
+            "products.productId": productId,
+            status: { $ne: 'Canceled' } // Make sure the order isn't canceled
+        });
+
+        if (!order) {
+            return res.status(400).json({ message: 'You must purchase this product before reviewing it.' });
+        }
+
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        // Check if already reviewed by user
+        const alreadyReviewed = product.reviews.find(
+            (r) => r.user.toString() === user._id.toString()
+        );
+
+        if (alreadyReviewed) {
+            return res.status(400).json({ message: 'Product already reviewed by you' });
+        }
+
+        const review = {
+            name: user.name,
+            rating: Number(rating),
+            comment,
+            user: user._id,
+        };
+
+        product.reviews.push(review);
+        product.numReviews = product.reviews.length;
+        // Calculate new average rating
+        product.rating = product.reviews.reduce((acc, item) => item.rating + acc, 0) / product.reviews.length;
+
+        await product.save();
+        res.status(201).json({ message: 'Review added successfully', success: true });
+    } catch (error) {
+        console.error('Error adding review:', error);
+        res.status(500).json({ message: 'Error adding review', error: error.message });
+    }
+};
+
+module.exports = { createProduct, getAllProducts, getProductsByUserEmail, editProduct, getProductById, deletedProduct, createProductReview };
