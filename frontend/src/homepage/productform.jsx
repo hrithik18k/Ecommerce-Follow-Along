@@ -7,11 +7,24 @@ function ProductForm({ setProducts }) {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
-    const [stock, setStock] = useState(''); 
+    const [stock, setStock] = useState('');
     const [images, setImages] = useState([]);
     const [existingImages, setExistingImages] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     const email = localStorage.getItem("email");
     const navigate = useNavigate();
+
+    const [category, setCategory] = useState('');
+    const categories = [
+        'Electronics',
+        'Fashion',
+        'Home & Kitchen',
+        'Beauty & Personal Care',
+        'Sports & Outdoors',
+        'Books',
+        'Toys & Games',
+        'Other'
+    ];
 
     useEffect(() => {
         if (id) {
@@ -23,6 +36,7 @@ function ProductForm({ setProducts }) {
                     setDescription(product.description);
                     setPrice(product.price);
                     setStock(product.stock);
+                    setCategory(product.category || '');
                     setExistingImages(product.imageUrl);
                 } catch (error) {
                     console.error("Error fetching product:", error);
@@ -38,12 +52,14 @@ function ProductForm({ setProducts }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
 
         const formData = new FormData();
         formData.append('name', name);
         formData.append('description', description);
         formData.append('price', price);
-        formData.append('stock', stock); 
+        formData.append('stock', stock);
+        formData.append('category', category);
         formData.append('userEmail', email);
         images.forEach((image) => {
             formData.append('images', image);
@@ -53,18 +69,13 @@ function ProductForm({ setProducts }) {
             let response;
             if (id) {
                 response = await axios.put(`http://localhost:3001/api/products/${id}`, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
+                    headers: { 'Content-Type': 'multipart/form-data' }
                 });
             } else {
                 response = await axios.post('http://localhost:3001/api/products', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
+                    headers: { 'Content-Type': 'multipart/form-data' }
                 });
             }
-            console.log(response.data);
             setProducts(prevProducts => {
                 if (id) {
                     return prevProducts.map(prod => prod._id === id ? response.data.product : prod);
@@ -79,114 +90,71 @@ function ProductForm({ setProducts }) {
         } catch (error) {
             console.error('Error in adding or editing the product:', error);
             alert('Error in adding or editing the product');
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
-        <div style={backgroundStyle}>
-            <div style={overlayStyle}>
-                <form onSubmit={handleSubmit} style={formStyle}>
-                    <label style={labelStyle}>
-                        Product Name:
-                        <input type="text" value={name} onChange={(e) => setName(e.target.value)} required style={inputStyle} />
-                    </label>
-                    <label style={labelStyle}>
-                        Description:
-                        <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} required style={inputStyle} />
-                    </label>
-                    <label style={labelStyle}>
-                        Price:
-                        <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} required style={inputStyle} />
-                    </label>
-                    <label style={labelStyle}>
-                        Stock:
-                        <input type="number" value={stock} onChange={(e) => setStock(e.target.value)} required style={inputStyle} />
-                    </label>
-                    <label style={labelStyle}>
-                        Product Images:
-                        <input type="file" multiple onChange={handleImageChange} style={inputStyle} />
-                    </label>
-                    <div style={previewContainerStyle}>
-                        {existingImages.length > 0 && existingImages.map((image, index) => (
-                            <img key={index} src={`http://localhost:3001/${image}`} alt={`Preview ${index}`} style={previewImageStyle} />
-                        ))}
-                        {images.length > 0 && images.map((image, index) => (
-                            <img key={index} src={URL.createObjectURL(image)} alt={`Preview ${index}`} style={previewImageStyle} />
-                        ))}
+        <div className="form-page">
+            <div className="form-card">
+                <h2 className="form-card-title">
+                    {id ? 'Edit Product' : 'Add New Product'}
+                </h2>
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label className="form-label">Product Name</label>
+                        <input type="text" value={name} onChange={(e) => setName(e.target.value)} required className="form-input" placeholder="Enter product name" />
                     </div>
-                    <button type="submit" style={buttonStyle}>Submit</button>
+                    <div className="form-group">
+                        <label className="form-label">Description</label>
+                        <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} required className="form-input" placeholder="Describe your product" />
+                    </div>
+                    <div className="form-group">
+                        <label className="form-label">Category</label>
+                        <select
+                            value={category}
+                            onChange={(e) => setCategory(e.target.value)}
+                            required
+                            className="form-input"
+                        >
+                            <option value="">Select Category</option>
+                            {categories.map(cat => (
+                                <option key={cat} value={cat}>{cat}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div className="form-group">
+                            <label className="form-label">Price ($)</label>
+                            <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} required className="form-input" placeholder="0.00" />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label">Stock</label>
+                            <input type="number" value={stock} onChange={(e) => setStock(e.target.value)} required className="form-input" placeholder="0" />
+                        </div>
+                    </div>
+                    <div className="form-group">
+                        <label className="form-label">Product Images</label>
+                        <input type="file" multiple onChange={handleImageChange} className="form-input-file" accept="image/*" />
+                    </div>
+                    {(existingImages.length > 0 || images.length > 0) && (
+                        <div className="image-preview-grid">
+                            {existingImages.map((image, index) => (
+                                <img key={`existing-${index}`} src={`http://localhost:3001/${image}`} alt={`Preview ${index}`} className="image-preview-item" />
+                            ))}
+                            {images.map((image, index) => (
+                                <img key={`new-${index}`} src={URL.createObjectURL(image)} alt={`Preview ${index}`} className="image-preview-item" />
+                            ))}
+                        </div>
+                    )}
+                    <button type="submit" className="btn btn-primary btn-full btn-lg" disabled={isLoading}>
+                        {isLoading ? 'Saving...' : (id ? 'Update Product' : 'Add Product')}
+                    </button>
                 </form>
             </div>
         </div>
     );
 }
-
-const backgroundStyle = {
-    backgroundColor: "red",
-    backgroundImage: "url('/military-background.jpg')",
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-    padding: '20px',
-};
-const overlayStyle = {
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    padding: '20px',
-    borderRadius: '8px',
-    boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
-};
-
-const buttonStyle = {
-    padding: '10px 20px',
-    borderRadius: '4px',
-    border: 'none',
-    backgroundColor: '#E2D7AB',
-    color: '#000',
-    cursor: 'pointer',
-};
-
-const formStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '16px',
-    maxWidth: '400px',
-    margin: 'auto',
-    padding: '20px',
-    border: '1px solid #ccc',
-    borderRadius: '8px',
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    boxShadow: '0 0 10px rgba(168, 216, 144, 0.1)',
-};
-
-const labelStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-    color: '#000',
-};
-
-const inputStyle = {
-    padding: '8px',
-    borderRadius: '4px',
-    border: '1px solid #ccc',
-};
-
-const previewContainerStyle = {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: '8px',
-    marginTop: '16px',
-};
-
-const previewImageStyle = {
-    width: '100px',
-    height: '100px',
-    objectFit: 'cover',
-    borderRadius: '4px',
-    border: '1px solid #ccc',
-};
 
 export default ProductForm;

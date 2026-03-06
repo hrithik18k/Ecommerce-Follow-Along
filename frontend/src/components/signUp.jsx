@@ -1,14 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router';
+import { useNavigate, Link } from 'react-router-dom';
 
 const SignUp = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const [addresses, setAddresses] = useState('');
     const [password, setPassword] = useState('');
+    const [role, setRoleInput] = useState('buyer');
     const [profilePicture, setProfilePicture] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
     const navigate = useNavigate();
+
+    useEffect(() => {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+    }, [theme]);
+
+    const toggleTheme = () => setTheme(prev => prev === 'dark' ? 'light' : 'dark');
 
     const handleFileChange = (e) => {
         setProfilePicture(e.target.files[0]);
@@ -16,98 +25,79 @@ const SignUp = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
 
         const formData = new FormData();
         formData.append('name', name);
         formData.append('email', email);
         formData.append('password', password);
+        formData.append('role', role);
         if (profilePicture) {
             formData.append('profilePicture', profilePicture);
         }
 
         try {
             const response = await axios.post('http://localhost:3001/api/users/register', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
+                headers: { 'Content-Type': 'multipart/form-data' }
             });
             if (response.data.user) {
-                alert('User registered successfully');
+                alert('Account created successfully!');
                 navigate('/login');
             }
         } catch (error) {
             console.error('Error registering user:', error);
             alert('Error registering user');
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
-        <div style={formContainerStyle}>
-            <form onSubmit={handleSubmit} style={formStyle}>
-                <label style={labelStyle}>
-                    Name:
-                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} required style={inputStyle} />
-                </label>
-                <label style={labelStyle}>
-                    Email:
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required style={inputStyle} />
-                </label>
-                <label style={labelStyle}>
-                    Address:
-                    <input type="text" value={addresses} onChange={(e) => setAddresses(e.target.value)} required style={inputStyle} />
-                </label>
-                <label style={labelStyle}>
-                    Password:
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required style={inputStyle} />
-                </label>
-                <label style={labelStyle}>
-                    Profile Picture:
-                    <input type="file" onChange={handleFileChange} style={inputStyle} />
-                </label>
-                <button type="submit" style={buttonStyle}>Sign Up</button>
-            </form>
+        <div className="auth-page">
+            <button onClick={toggleTheme} className="theme-toggle" style={{ position: 'fixed', top: '1rem', right: '1rem' }} title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}>
+                {theme === 'dark' ? '☀' : '☾'}
+            </button>
+            <div className="auth-card">
+                <div className="auth-header">
+                    <div className="auth-logo">LuxeMart</div>
+                    <h2 className="auth-title">Create Account</h2>
+                    <p className="auth-subtitle">Join our marketplace</p>
+                </div>
+                <form onSubmit={handleSubmit} className="auth-form">
+                    <div className="form-group">
+                        <label className="form-label">Full Name</label>
+                        <input type="text" value={name} onChange={(e) => setName(e.target.value)} required className="form-input" placeholder="John Doe" />
+                    </div>
+                    <div className="form-group">
+                        <label className="form-label">Email Address</label>
+                        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="form-input" placeholder="you@example.com" />
+                    </div>
+                    <div className="form-group">
+                        <label className="form-label">Password</label>
+                        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="form-input" placeholder="Enter your password" />
+                    </div>
+                    <div className="form-group">
+                        <label className="form-label">Register as</label>
+                        <select value={role} onChange={(e) => setRoleInput(e.target.value)} className="form-select">
+                            <option value="buyer">Buyer</option>
+                            <option value="seller">Seller</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <div className="form-group">
+                        <label className="form-label">Profile Picture</label>
+                        <input type="file" onChange={handleFileChange} className="form-input-file" accept="image/*" />
+                    </div>
+                    <button type="submit" className="btn btn-primary btn-full btn-lg" disabled={isLoading}>
+                        {isLoading ? 'Creating...' : 'Create Account'}
+                    </button>
+                </form>
+                <div className="auth-link">
+                    Already have an account? <Link to="/login">Sign in</Link>
+                </div>
+            </div>
         </div>
     );
-};
-
-const formContainerStyle = {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-    backgroundColor: '#E2D7AB',
-};
-
-const formStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '16px',
-    padding: '20px',
-    borderRadius: '8px',
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
-};
-
-const labelStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-    color: '#000',
-};
-
-const inputStyle = {
-    padding: '8px',
-    borderRadius: '4px',
-    border: '1px solid #ccc',
-};
-
-const buttonStyle = {
-    padding: '10px 20px',
-    borderRadius: '4px',
-    border: 'none',
-    backgroundColor: '#E2D7AB',
-    color: '#000',
-    cursor: 'pointer',
 };
 
 export default SignUp;
