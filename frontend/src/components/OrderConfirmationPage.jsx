@@ -2,81 +2,88 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import RazorpayButton from './RazorpayButton';
-import { BASE_URL } from '../config'; // Import the BASE_URL
 
 const OrderConfirmationPage = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const { cartItems, selectedAddress, totalPrice } = location.state;
-    const token = localStorage.getItem('token'); // Get the token from localStorage
+    const token = localStorage.getItem('token');
     const [paymentMethod, setPaymentMethod] = useState('COD');
+    const [isPlacing, setIsPlacing] = useState(false);
 
     const handlePlaceOrder = async () => {
+        setIsPlacing(true);
         try {
-            const response = await axios.post(`${BASE_URL}/api/orders/place-order`, { 
-                products: cartItems,
-                address: selectedAddress,
-                totalPrice
-            }, {
-                headers: {
-                    Authorization: `Bearer ${token}` // Include the token in the request headers
-                }
-            });
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/orders/place-order`, {
+                products: cartItems, address: selectedAddress, totalPrice
+            }, { headers: { Authorization: `Bearer ${token}` } });
 
             if (response.status === 201) {
                 navigate('/order-success');
-            } else {
-                console.error('Failed to place order');
             }
         } catch (error) {
             console.error('Error placing order:', error);
+        } finally {
+            setIsPlacing(false);
         }
     };
 
     return (
-        <div style={{ padding: '20px', backgroundColor: '#E2D7AB', borderRadius: '8px', maxWidth: '800px', margin: '0 auto' }}>
-            <h1>Order Confirmation</h1>
-            <h2>Products</h2>
-            <ul style={{ listStyleType: 'none', padding: '0' }}>
+        <div className="order-confirmation-container">
+            <h1 className="page-title">Order Confirmation</h1>
+            <p className="page-subtitle">Review your order before placing it</p>
+
+            <div className="order-card">
+                <h3 style={{ color: '#fff', fontFamily: 'var(--font-display)', marginBottom: '1rem' }}>Products</h3>
                 {cartItems.map(item => (
-                    <li key={item.productId._id} style={{ padding: '10px', borderBottom: '1px solid #ccc', display: 'flex', alignItems: 'center' }}>
-                        <img src={`${BASE_URL}/${item.productId.imageUrl[0]}`} alt={item.productId.name} style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '20px' }} />
-                        <div>
-                            <span>{item.productId.name}</span> - <span>Quantity: {item.quantity}</span> - <span>Price: ${item.productId.price}</span>
-                        </div>
-                    </li>
+                    <div key={item.productId._id} className="order-product-item">
+                        <img src={`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/${item.productId.imageUrl[0]}`} alt={item.productId.name} className="order-product-image" />
+                        <span className="order-product-name">{item.productId.name}</span>
+                        <span className="order-product-detail">x{item.quantity}</span>
+                        <span className="order-product-detail">${item.productId.price}</span>
+                    </div>
                 ))}
-            </ul>
-            <h2>Delivery Address</h2>
-            <p>{selectedAddress.address1}, {selectedAddress.address2}, {selectedAddress.city}, {selectedAddress.country}, {selectedAddress.zipCode}</p>
-            <h2>Total Price</h2>
-            <p>${totalPrice.toFixed(2)}</p>
-            <div>
-                <label>
-                    <input
-                        type="radio"
-                        value="COD"
-                        checked={paymentMethod === 'COD'}
-                        onChange={() => setPaymentMethod('COD')}
-                    />
-                    Cash on Delivery
-                </label>
-                <label>
-                    <input
-                        type="radio"
-                        value="ONLINE"
-                        checked={paymentMethod === 'ONLINE'}
-                        onChange={() => setPaymentMethod('ONLINE')}
-                    />
-                    Online Payment
-                </label>
             </div>
-            {paymentMethod === 'ONLINE' && (
-                <RazorpayButton totalPrice={totalPrice} cartItems={cartItems} selectedAddress={selectedAddress} />
-            )}
-            {paymentMethod === 'COD' && (
-                <button onClick={handlePlaceOrder} style={{ marginTop: '20px', padding: '10px 20px', backgroundColor: 'darkGreen', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Place Order</button>
-            )}
+
+            <div className="order-card">
+                <h3 style={{ color: '#fff', fontFamily: 'var(--font-display)', marginBottom: '1rem' }}>Delivery Address</h3>
+                <div className="order-address">
+                    <div className="order-address-label">Delivering to</div>
+                    {selectedAddress.address1}, {selectedAddress.address2 && `${selectedAddress.address2}, `}
+                    {selectedAddress.city}, {selectedAddress.country} - {selectedAddress.zipCode}
+                </div>
+            </div>
+
+            <div className="order-card">
+                <h3 style={{ color: '#fff', fontFamily: 'var(--font-display)', marginBottom: '1rem' }}>Payment Method</h3>
+                <div className="payment-options">
+                    <div className={`payment-option ${paymentMethod === 'COD' ? 'selected' : ''}`} onClick={() => setPaymentMethod('COD')}>
+                        <input type="radio" value="COD" checked={paymentMethod === 'COD'} onChange={() => setPaymentMethod('COD')} />
+                        <span className="payment-label">Cash on Delivery</span>
+                    </div>
+                    <div className={`payment-option ${paymentMethod === 'ONLINE' ? 'selected' : ''}`} onClick={() => setPaymentMethod('ONLINE')}>
+                        <input type="radio" value="ONLINE" checked={paymentMethod === 'ONLINE'} onChange={() => setPaymentMethod('ONLINE')} />
+                        <span className="payment-label">Online Payment</span>
+                    </div>
+                </div>
+            </div>
+
+            <div className="cart-summary">
+                <div className="cart-summary-row cart-summary-total">
+                    <span>Total</span>
+                    <span className="cart-summary-total-price">${totalPrice.toFixed(2)}</span>
+                </div>
+            </div>
+
+            <div style={{ marginTop: '1.5rem' }}>
+                {paymentMethod === 'ONLINE' ? (
+                    <RazorpayButton totalPrice={totalPrice} cartItems={cartItems} selectedAddress={selectedAddress} />
+                ) : (
+                    <button onClick={handlePlaceOrder} className="btn btn-primary btn-full btn-lg" disabled={isPlacing}>
+                        {isPlacing ? 'Placing Order...' : 'Place Order'}
+                    </button>
+                )}
+            </div>
         </div>
     );
 };

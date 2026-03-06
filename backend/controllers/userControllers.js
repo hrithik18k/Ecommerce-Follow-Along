@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const registerUser = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, role } = req.body;
         const profilePicture = req.file ? req.file.path : null;
 
         // Check if user already exists
@@ -14,13 +14,26 @@ const registerUser = async (req, res) => {
             return res.status(400).json({ message: "User Already Exists" });
         }
 
+        // Restriction: Only one admin allowed
+        if (role === 'admin') {
+            const existingAdmin = await User.findOne({ role: 'admin' });
+            if (existingAdmin) {
+                return res.status(400).json({ message: "admin already exists" });
+            }
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Validate role
+        const validRoles = ['admin', 'seller', 'buyer'];
+        const userRole = validRoles.includes(role) ? role : 'buyer';
 
         // Create a new user
         const newUser = new User({
             name,
             email,
             password: hashedPassword,
+            role: userRole,
             profilePicture,
         });
 
@@ -41,19 +54,15 @@ const loginUser = async (req, res) => {
         const user = await User.findOne({ email });
 
         if (user && (await bcrypt.compare(password, user.password))) {
-            const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
+            const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
                 expiresIn: '30d',
-            });
-
-            res.cookie('token', token, {
-                httpOnly: true,
-                maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
             });
 
             res.json({
                 _id: user._id,
                 name: user.name,
                 email: user.email,
+                role: user.role,
                 token,
             });
         } else {
@@ -81,14 +90,24 @@ const getUserProfile = async (req, res) => {
     }
 };
 
+
+
 const updateUserProfile = async (req, res) => {
     const { email } = req.params;
-    const { name, addresses } = req.body;
+    const { name, addresses, email: newEmail } = req.body;
 
     try {
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
+        }
+
+        if (newEmail && newEmail !== user.email) {
+            const emailExists = await User.findOne({ email: newEmail });
+            if (emailExists) {
+                return res.status(400).json({ message: 'Email already in use' });
+            }
+            user.email = newEmail;
         }
 
         user.name = name || user.name;
@@ -154,4 +173,40 @@ const deleteAddress = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, loginUser, getUserProfile, updateUserProfile, addAddress, deleteAddress };
+// Get all users (admin only)
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find({}).select('-password');
+        res.status(200).json(users);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+// Update user role (admin only)
+const updateUserRole = async (req, res) => {
+    const { userId, role } = req.body;
+
+    try {
+        const validRoles = ['admin', 'seller', 'buyer'];
+        if (!validRoles.includes(role)) {
+            return res.status(400).json({ message: 'Invalid role' });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        user.role = role;
+        await user.save();
+        res.status(200).json({ message: 'User role updated successfully', user });
+    } catch (error) {
+        console.error('Error updating user role:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+
+module.exports = { registerUser, loginUser, getUserProfile, updateUserProfile, addAddress, deleteAddress, getAllUsers, updateUserRole };

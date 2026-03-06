@@ -1,25 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from "react-router-dom";
 import axios from 'axios';
-import { BASE_URL } from '../config';
 
 function Card({ id, name, image, description, price, showEditButton, onDelete, showDetailsLink, showAddToCartButton = true }) {
-    const [isHovered, setIsHovered] = useState(false);
-
-    const linkStyle = {
-        color: 'black',
-        textDecoration: 'none'
-    };
-
     const handleAddToCart = async () => {
-        const userEmail = localStorage.getItem('email'); 
+        const userEmail = localStorage.getItem('email');
         if (!userEmail) {
-            alert('Please sign in or log in to add products to the cart.');
+            alert('Please sign in to add products to your cart.');
             return;
         }
 
         try {
-            const response = await axios.post(`${BASE_URL}/api/users/cart`, { email: userEmail, productId: id, quantity: 1 });
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/users/cart`, { email: userEmail, productId: id, quantity: 1 });
             if (response.status === 200) {
                 alert('Product added to cart');
             } else {
@@ -32,44 +24,56 @@ function Card({ id, name, image, description, price, showEditButton, onDelete, s
 
     const cardContent = (
         <>
-            <img src={`${BASE_URL}/${image}`} alt={name} style={{ width: '100%', height: 'auto', borderRadius: '8px 8px 0 0' }} />
-            <h3>{name}</h3>
-            <p>{description}</p>
-            <p><b>{price.toFixed(2)}M $</b></p>
+            <div className="product-card-image-wrapper">
+                <img
+                    src={image && image.startsWith('http') ? image : `${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/${image}`}
+                    alt={name}
+                    className="product-card-image"
+                />
+                <div className="product-card-overlay">
+                    {showDetailsLink && (
+                        <span style={{ color: '#fff', fontSize: '0.85rem', fontWeight: '500' }}>
+                            View Details
+                        </span>
+                    )}
+                </div>
+            </div>
+            <div className="product-card-body">
+                <h3 className="product-card-name">{name}</h3>
+                <p className="product-card-description">{description}</p>
+            </div>
         </>
     );
 
     return (
-        <div 
-            style={{ 
-                border: '1px solid #ccc', 
-                padding: '16px', 
-                textAlign: 'center', 
-                width: '150px', 
-                backgroundColor: '#E2D7AB', 
-                borderRadius: '8px' ,
-                border: isHovered ? "2px solid #000" : "2px solid white", 
-                transition: "border-color 0.3s ease"
-            }}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-        >
+        <div className="product-card">
             {showDetailsLink ? (
-                <Link to={`/product/${id}`} style={linkStyle}>
+                <Link to={`/product/${id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                     {cardContent}
                 </Link>
             ) : (
                 cardContent
             )}
-            {showAddToCartButton && (
-                <button onClick={handleAddToCart} style={{ marginTop: '10px', backgroundColor: 'darkGreen', color: 'white', border: 'none', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer' }}>Add to Cart</button>
-            )}
-            {showEditButton && (
-                <>
-                    <Link style={{marginRight: '10px', backgroundColor: 'darkGreen', color: 'white', border: 'none', padding: '5px 10px', borderRadius: '4px' }} to={`/edit/${id}`} className="nav-link">Edit</Link>
-                    <button onClick={() => onDelete(id)} style={{ marginLeft: '10px', backgroundColor: 'maroon', color: 'white', border: 'none', padding: '5px 10px', borderRadius: '4px' }}>Delete</button>
-                </>
-            )}
+            <div className="product-card-footer">
+                <span className="product-card-price">${price.toFixed(2)}</span>
+                <div className="product-card-actions">
+                    {showAddToCartButton && (
+                        <button onClick={handleAddToCart} className="btn btn-primary btn-sm">
+                            Add to Cart
+                        </button>
+                    )}
+                    {showEditButton && (
+                        <>
+                            <Link to={`/edit/${id}`} className="btn btn-secondary btn-sm">
+                                Edit
+                            </Link>
+                            <button onClick={() => onDelete(id)} className="btn btn-danger btn-sm">
+                                Delete
+                            </button>
+                        </>
+                    )}
+                </div>
+            </div>
         </div>
     );
 }
