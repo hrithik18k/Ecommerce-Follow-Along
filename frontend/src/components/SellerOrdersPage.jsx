@@ -11,7 +11,7 @@ const SellerOrdersPage = () => {
     useEffect(() => {
         const fetchSellerOrders = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL || `${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}`}/api/orders/seller-orders`, {
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/orders/seller-orders`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setOrders(response.data.orders);
@@ -26,7 +26,7 @@ const SellerOrdersPage = () => {
 
     const handleUpdateStatus = async (orderId, newStatus) => {
         try {
-            const response = await axios.patch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}/api/orders/${orderId}/status`,
+            const response = await axios.patch(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/orders/${orderId}/status`,
                 { status: newStatus },
                 { headers: { Authorization: `Bearer ${token}` } }
             );

@@ -11,7 +11,7 @@ const CartPage = () => {
     useEffect(() => {
         const fetchCartItems = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}/api/users/cart/${userEmail}`);
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/users/cart/${userEmail}`);
                 const cart = response.data.cart || [];
                 setCartItems(cart);
                 calculateTotalPrice(cart);
@@ -24,7 +24,7 @@ const CartPage = () => {
 
     const handleQuantityChange = async (productId, action) => {
         try {
-            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}/api/users/cart/quantity`, { email: userEmail, productId, action });
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/users/cart/quantity`, { email: userEmail, productId, action });
             if (response.status === 200) {
                 const updatedCart = response.data.cart;
                 setCartItems(updatedCart);
@@ -37,7 +37,7 @@ const CartPage = () => {
 
     const handleDelete = async (productId) => {
         try {
-            const response = await axios.delete(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}/api/users/cart/${userEmail}/${productId}`);
+            const response = await axios.delete(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/users/cart/${userEmail}/${productId}`);
             if (response.status === 200) {
                 const updatedCart = response.data.cart;
                 setCartItems(updatedCart);
@@ -77,7 +77,7 @@ const CartPage = () => {
                                 <img
                                     src={item.productId.imageUrl[0].startsWith('http')
                                         ? item.productId.imageUrl[0]
-                                        : `${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}/${item.productId.imageUrl[0]}`}
+                                        : `${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/${item.productId.imageUrl[0]}`}
                                     alt={item.productId?.name}
                                     className="cart-item-image"
                                 />
