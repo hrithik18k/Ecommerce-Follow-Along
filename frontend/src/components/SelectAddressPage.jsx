@@ -13,7 +13,7 @@ const SelectAddressPage = () => {
     useEffect(() => {
         const fetchAddresses = async () => {
             try {
-                const response = await axios.get(`http://localhost:3001/api/users/profile/${userEmail}`);
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}/api/users/profile/${userEmail}`);
                 setAddresses(response.data.addresses || []);
             } catch (error) {
                 console.error('Error fetching addresses:', error);

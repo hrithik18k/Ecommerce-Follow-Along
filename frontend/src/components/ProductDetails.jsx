@@ -12,7 +12,7 @@ const ProductDetails = () => {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const response = await axios.get(`http://localhost:3001/api/products/${id}`);
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}/api/products/${id}`);
                 setProduct(response.data);
             } catch (error) {
                 console.error("Error fetching product:", error);
@@ -26,7 +26,7 @@ const ProductDetails = () => {
         if (quantity > product.stock) { alert('Quantity exceeds available stock'); return; }
 
         try {
-            const response = await axios.post('http://localhost:3001/api/users/cart', {
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL || `${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}`}/api/users/cart`, {
                 email: userEmail, productId: product._id, quantity: parseInt(quantity)
             });
             if (response.status === 200) {
@@ -39,7 +39,7 @@ const ProductDetails = () => {
 
     const getImageUrl = (url) => {
         if (!url) return '';
-        return url.startsWith('http') ? url : `http://localhost:3001/${url}`;
+        return url.startsWith('http') ? url : `${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}/${url}`;
     };
 
     if (!product) {

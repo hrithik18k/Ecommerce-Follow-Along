@@ -45,7 +45,7 @@ function App() {
 
     const fetchProducts = async () => {
         try {
-            let res = await axios.get('http://localhost:3001/api/products');
+            let res = await axios.get(`${import.meta.env.VITE_BACKEND_URL || `${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}`}/api/products`);
             setProducts(res.data);
         } catch (error) {
             console.log("Error: ", error.message);
@@ -54,7 +54,7 @@ function App() {
 
     const fetchUserProfile = async () => {
         try {
-            const response = await axios.get(`http://localhost:3001/api/users/profile/${email}`);
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}/api/users/profile/${email}`);
             setUser(response.data);
         } catch (error) {
             console.error('Error fetching user profile:', error);
@@ -126,7 +126,7 @@ function App() {
                                 )}
                                 {user && (
                                     <Link to="/profile" className="profile-info">
-                                        <img src={`http://localhost:3001/${user.profilePicture}`} alt="Profile" className="profile-image" />
+                                        <img src={`${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}/${user.profilePicture}`} alt="Profile" className="profile-image" />
                                         <span className="profile-name">{user.name}</span>
                                         <span className={getRoleBadgeClass(role)}>{role}</span>
                                     </Link>

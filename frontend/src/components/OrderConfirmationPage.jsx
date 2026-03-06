@@ -14,7 +14,7 @@ const OrderConfirmationPage = () => {
     const handlePlaceOrder = async () => {
         setIsPlacing(true);
         try {
-            const response = await axios.post('http://localhost:3001/api/orders/place-order', {
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL || `${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}`}/api/orders/place-order`, {
                 products: cartItems, address: selectedAddress, totalPrice
             }, { headers: { Authorization: `Bearer ${token}` } });
 
@@ -37,7 +37,7 @@ const OrderConfirmationPage = () => {
                 <h3 style={{ color: '#fff', fontFamily: 'var(--font-display)', marginBottom: '1rem' }}>Products</h3>
                 {cartItems.map(item => (
                     <div key={item.productId._id} className="order-product-item">
-                        <img src={`http://localhost:3001/${item.productId.imageUrl[0]}`} alt={item.productId.name} className="order-product-image" />
+                        <img src={`${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}/${item.productId.imageUrl[0]}`} alt={item.productId.name} className="order-product-image" />
                         <span className="order-product-name">{item.productId.name}</span>
                         <span className="order-product-detail">x{item.quantity}</span>
                         <span className="order-product-detail">${item.productId.price}</span>

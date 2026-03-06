@@ -15,7 +15,7 @@ const AdminDashboard = () => {
 
         const fetchUsers = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/users/all', {
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL || `${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}`}/api/users/all`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setUsers(response.data);
@@ -30,7 +30,7 @@ const AdminDashboard = () => {
 
     const handleRoleChange = async (userId, newRole) => {
         try {
-            await axios.put('http://localhost:3001/api/users/role', { userId, role: newRole }, {
+            await axios.put(`${import.meta.env.VITE_BACKEND_URL || `${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}`}/api/users/role`, { userId, role: newRole }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setUsers(users.map(user => user._id === userId ? { ...user, role: newRole } : user));
@@ -99,7 +99,7 @@ const AdminDashboard = () => {
                                 <td>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                                         {user.profilePicture && (
-                                            <img src={`http://localhost:3001/${user.profilePicture}`} alt={user.name}
+                                            <img src={`${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}/${user.profilePicture}`} alt={user.name}
                                                 style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--border)' }}
                                             />
                                         )}

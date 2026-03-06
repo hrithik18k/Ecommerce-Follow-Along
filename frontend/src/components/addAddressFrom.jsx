@@ -15,7 +15,7 @@ const AddAddressForm = () => {
         e.preventDefault();
         try {
             const email = localStorage.getItem("email");
-            await axios.put(`http://localhost:3001/api/users/profile/${email}/address`, address);
+            await axios.put(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}/api/users/profile/${email}/address`, address);
             navigate('/profile');
         } catch (error) {
             console.error('Error updating address:', error);

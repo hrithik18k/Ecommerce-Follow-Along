@@ -12,7 +12,7 @@ const Profile = () => {
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                const response = await axios.get(`http://localhost:3001/api/users/profile/${email}`);
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}/api/users/profile/${email}`);
                 setUser(response.data);
             } catch (error) {
                 console.error('Error fetching user profile:', error);
@@ -32,7 +32,7 @@ const Profile = () => {
         if (profilePicture) formData.append('profilePicture', profilePicture);
 
         try {
-            const response = await axios.put(`http://localhost:3001/api/users/profile/${email}`, formData, {
+            const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}/api/users/profile/${email}`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             const updatedUser = response.data.user;
@@ -58,7 +58,7 @@ const Profile = () => {
 
     const handleDeleteAddress = async (index) => {
         try {
-            const response = await axios.delete(`http://localhost:3001/api/users/profile/${email}/address`, { data: { index } });
+            const response = await axios.delete(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}/api/users/profile/${email}/address`, { data: { index } });
             setUser(response.data.user);
         } catch (error) {
             console.error('Error deleting address:', error);
@@ -86,7 +86,7 @@ const Profile = () => {
             <h1 className="page-title">My Profile</h1>
 
             <div className="profile-card">
-                <img src={`http://localhost:3001/${user.profilePicture}`} alt="Profile" className="profile-avatar" />
+                <img src={`${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}/${user.profilePicture}`} alt="Profile" className="profile-avatar" />
                 <h2 className="profile-user-name">{user.name}</h2>
                 <p className="profile-user-email">{user.email}</p>
                 <div className="profile-user-role">
