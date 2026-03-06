@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setEmail } from '../store/userSlice';
+import { setEmail, setRole, setToken } from '../store/userSlice';
 
 const Login = () => {
   const [email, setEmailInput] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -15,21 +17,32 @@ const Login = () => {
     }
   }, [navigate]);
 
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+    setIsLoading(true);
+
     try {
-      const response = await fetch('http://localhost:3001/api/users/login', { 
-        method: 'POST', 
+      const response = await fetch('http://localhost:3001/api/users/login', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });
 
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem("token", data.token); // Store the token in localStorage
-        localStorage.setItem("email", email); // Store the email in localStorage
-        dispatch(setEmail(email)); // Set the email in the global state
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("email", email);
+        localStorage.setItem("role", data.role);
+        dispatch(setEmail(email));
+        dispatch(setRole(data.role));
+        dispatch(setToken(data.token));
         navigate('/');
       } else {
         const data = await response.json();
@@ -38,28 +51,52 @@ const Login = () => {
     } catch (error) {
       console.error('Error logging in:', error);
       alert('Error logging in');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', backgroundImage: "url('/military-background.jpg')", borderRadius:'8px' }}>
-      <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.8)', padding: '2rem', borderRadius: '8px', boxShadow: '0 0 10px rgba(0,0,0,0.1)', maxWidth: '400px', width: '100%',border:"3px solid white" }}>
-        <h2 style={{ fontSize: '24px', fontWeight: 'bold', textAlign: 'center', color: '#333', marginBottom: '1.5rem' }}>Login</h2>
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div>
-            <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#555' }}>Email:</label>
-            <input type="email" value={email} onChange={(e) => setEmailInput(e.target.value)}
-            style={{ marginTop: '4px', padding: '8px', width: '100%', border: '1px solid #ccc', borderRadius: '4px' }} required />
+    <div className="auth-page">
+      <button onClick={toggleTheme} className="theme-toggle" style={{ position: 'fixed', top: '1rem', right: '1rem' }} title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}>
+        {theme === 'dark' ? '☀' : '☾'}
+      </button>
+      <div className="auth-card">
+        <div className="auth-header">
+          <div className="auth-logo">LuxeMart</div>
+          <h2 className="auth-title">Welcome Back</h2>
+          <p className="auth-subtitle">Sign in to continue shopping</p>
+        </div>
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="form-group">
+            <label className="form-label">Email Address</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmailInput(e.target.value)}
+              className="form-input"
+              placeholder="you@example.com"
+              required
+            />
           </div>
-          <div>
-            <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#555' }}>Password:</label>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
-            style={{ marginTop: '4px', padding: '8px', width: '100%', border: '1px solid #ccc', borderRadius: '4px' }} required />
+          <div className="form-group">
+            <label className="form-label">Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="form-input"
+              placeholder="Enter your password"
+              required
+            />
           </div>
-          <button type="submit" style={{ width: '100%', backgroundColor: '#E2D7AB', color: 'black', padding: '10px', borderRadius: '4px', border: '1px solid black', cursor: 'pointer' }}>
-            Login
+          <button type="submit" className="btn btn-primary btn-full btn-lg" disabled={isLoading}>
+            {isLoading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
+        <div className="auth-link">
+          Don't have an account? <Link to="/signup">Create one</Link>
+        </div>
       </div>
     </div>
   );

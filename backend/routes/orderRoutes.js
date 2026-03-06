@@ -1,6 +1,6 @@
 const express = require('express');
-const { placeOrder, getUserOrders } = require('../controllers/orderControllers');
-const { protect } = require('../middlewares/authMiddleware');
+const { placeOrder, getUserOrders, getSellerOrders, updateOrderStatus } = require('../controllers/orderControllers');
+const { protect, sellerOrAdmin } = require('../middlewares/authMiddleware');
 const Order = require('../models/order'); // Ensure the Order model is imported
 const { createOrder, verifyPayment } = require('../controllers/razorpayController');
 
@@ -8,6 +8,8 @@ const router = express.Router();
 
 router.post('/place-order', protect, placeOrder);
 router.get('/user-orders', protect, getUserOrders);
+router.get('/seller-orders', protect, sellerOrAdmin, getSellerOrders);
+router.patch('/:orderId/status', protect, sellerOrAdmin, updateOrderStatus);
 router.post('/create-order', createOrder);
 router.post('/verify-payment', verifyPayment);
 router.patch('/:orderId/cancel', protect, async (req, res) => {

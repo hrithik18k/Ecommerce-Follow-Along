@@ -28,6 +28,12 @@ const userSchema = new mongoose.Schema({
         required:true,
     },
 
+    role: {
+        type: String,
+        enum: ['admin', 'seller', 'buyer'],
+        default: 'buyer',
+    },
+
     profilePicture:{
         type:String,
     },
