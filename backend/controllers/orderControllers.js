@@ -16,7 +16,8 @@ const placeOrder = async (req, res) => {
             user: user._id,
             products,
             address,
-            totalPrice
+            totalPrice,
+            status: 'Pending',
         });
 
         await order.save();
@@ -44,6 +45,7 @@ const getUserOrders = async (req, res) => {
         const orders = await Order.find({ user: user._id }).populate('products.productId');
         res.status(200).json({ orders });
     } catch (error) {
+        console.error('Error fetching user orders:', error);
         res.status(500).json({ message: 'Server error', error });
     }
 };
