@@ -16,7 +16,7 @@ const RazorpayButton = ({ totalPrice, cartItems, selectedAddress }) => {
     }, []);
 
     const handlePayment = async () => {
-        const order = await axios.post('http://localhost:3001/api/orders/create-order', {
+        const order = await axios.post(`${import.meta.env.VITE_BACKEND_URL || `${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}`}/api/orders/create-order`, {
             amount: totalPrice * 100, currency: 'INR', receipt: 'receipt#1',
         });
 
@@ -28,9 +28,9 @@ const RazorpayButton = ({ totalPrice, cartItems, selectedAddress }) => {
             description: 'Marketplace',
             order_id: order.data.id,
             handler: async (response) => {
-                const paymentResult = await axios.post('http://localhost:3001/api/orders/verify-payment', response);
+                const paymentResult = await axios.post(`${import.meta.env.VITE_BACKEND_URL || `${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}`}/api/orders/verify-payment`, response);
                 if (paymentResult.data.status === 'success') {
-                    await axios.post('http://localhost:3001/api/orders/place-order', {
+                    await axios.post(`${import.meta.env.VITE_BACKEND_URL || `${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}`}/api/orders/place-order`, {
                         products: cartItems, address: selectedAddress, totalPrice
                     }, { headers: { Authorization: `Bearer ${token}` } });
                     alert('Payment Successful');

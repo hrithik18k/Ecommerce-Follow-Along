@@ -8,7 +8,7 @@ const MyOrdersPage = () => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/orders/user-orders', {
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL || `${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}`}/api/orders/user-orders`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setOrders(response.data.orders);
@@ -21,7 +21,7 @@ const MyOrdersPage = () => {
 
     const handleCancelOrder = async (orderId) => {
         try {
-            const response = await axios.patch(`http://localhost:3001/api/orders/${orderId}/cancel`, {}, {
+            const response = await axios.patch(`${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}/api/orders/${orderId}/cancel`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (response.status === 200) {

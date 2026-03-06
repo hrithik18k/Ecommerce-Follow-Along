@@ -11,7 +11,7 @@ function Card({ id, name, image, description, price, showEditButton, onDelete, s
         }
 
         try {
-            const response = await axios.post('http://localhost:3001/api/users/cart', { email: userEmail, productId: id, quantity: 1 });
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL || `${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}`}/api/users/cart`, { email: userEmail, productId: id, quantity: 1 });
             if (response.status === 200) {
                 alert('Product added to cart');
             } else {
@@ -26,7 +26,7 @@ function Card({ id, name, image, description, price, showEditButton, onDelete, s
         <>
             <div className="product-card-image-wrapper">
                 <img
-                    src={image && image.startsWith('http') ? image : `http://localhost:3001/${image}`}
+                    src={image && image.startsWith('http') ? image : `${import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"}/${image}`}
                     alt={name}
                     className="product-card-image"
                 />
