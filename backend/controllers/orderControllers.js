@@ -1,79 +1,60 @@
 const Order = require('../models/order');
-const User = require('../models/userModel');
 const Product = require('../models/productModels');
+const User = require('../models/userModel');
 
 const placeOrder = async (req, res) => {
     try {
         const { products, address, totalPrice } = req.body;
-        const userEmail = req.user.email;
+        const user = req.user;
 
-        const user = await User.findOne({ email: userEmail });
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+        if (!products || products.length === 0) {
+            return res.status(400).json({ message: 'No order items' });
         }
 
-        const order = new Order({
+        const newOrder = new Order({
             user: user._id,
             products,
             address,
-            totalPrice,
-            status: 'Pending',
+            totalPrice
         });
 
-        await order.save();
+        const createdOrder = await newOrder.save();
 
-        // Clear the user's cart after matching the purchase
-        user.cart = [];
-        await user.save();
+        // Clear the user's cart
+        await User.findByIdAndUpdate(user._id, { cart: [] });
 
-        res.status(201).json({ message: 'Order placed successfully', order });
+        res.status(201).json({ message: 'Order placed successfully', order: createdOrder });
     } catch (error) {
         console.error('Error placing order:', error);
-        res.status(500).json({ message: 'Server error', error });
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
 
 const getUserOrders = async (req, res) => {
     try {
-        const userEmail = req.user.email;
-
-        const user = await User.findOne({ email: userEmail });
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        const orders = await Order.find({ user: user._id }).populate('products.productId');
-        res.status(200).json({ orders });
+        const orders = await Order.find({ user: req.user._id }).populate('products.productId');
+        res.status(200).json(orders);
     } catch (error) {
         console.error('Error fetching user orders:', error);
-        res.status(500).json({ message: 'Server error', error });
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
 
 const getSellerOrders = async (req, res) => {
     try {
-        const sellerEmail = req.user.email;
+        // Fetch products owned by the seller
+        const sellerProducts = await Product.find({ userEmail: req.user.email }).select('_id');
+        const sellerProductIds = sellerProducts.map(p => p._id);
 
-        // Find all products belonging to this seller
-        const productsList = await Product.find({ userEmail: sellerEmail });
-        const productIds = productsList.map(p => p._id);
+        // Find orders containing seller's products
+        const orders = await Order.find({ "products.productId": { $in: sellerProductIds } })
+            .populate('user', 'name email')
+            .populate('products.productId');
 
-        // Find orders containing any of these products
-        const orders = await Order.find({
-            'products.productId': { $in: productIds }
-        }).populate('user', 'name email').populate('products.productId');
-
-        // Filter product items in each order to only show that seller's products
-        const sellerSpecificOrders = orders.map(order => {
-            const ord = order.toObject();
-            ord.products = ord.products.filter(p => productIds.some(id => id.equals(p.productId._id)));
-            return ord;
-        });
-
-        res.status(200).json({ orders: sellerSpecificOrders });
+        res.status(200).json(orders);
     } catch (error) {
         console.error('Error fetching seller orders:', error);
-        res.status(500).json({ message: 'Server error', error });
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
 
@@ -93,7 +74,7 @@ const updateOrderStatus = async (req, res) => {
         res.status(200).json({ message: 'Order status updated successfully', order });
     } catch (error) {
         console.error('Error updating order status:', error);
-        res.status(500).json({ message: 'Server error', error });
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
 

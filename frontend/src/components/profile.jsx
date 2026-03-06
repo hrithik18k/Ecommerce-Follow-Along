@@ -144,6 +144,27 @@ const Profile = () => {
                     </div>
                 )}
             </div>
+
+            <div className="wishlist-section" style={{ marginTop: '2rem' }}>
+                <h3 className="section-title" style={{ marginBottom: '1rem' }}>My Wishlist</h3>
+                {user.wishlist && user.wishlist.length > 0 ? (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                        {user.wishlist.map((item) => (
+                            <div key={item._id} style={{ border: '1px solid var(--border-color)', borderRadius: '10px', padding: '1rem', width: '200px', cursor: 'pointer', background: 'var(--card-bg)' }} onClick={() => navigate(`/product/${item._id}`)}>
+                                <img src={item.imageUrl && item.imageUrl.length > 0 ? `${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/${item.imageUrl[0]}` : ''} alt={item.name} style={{ width: '100%', height: '150px', objectFit: 'cover', borderRadius: '5px' }} />
+                                <h4 style={{ marginTop: '0.5rem', fontSize: '1.1rem', color: 'var(--text-color)' }}>{item.name}</h4>
+                                <p style={{ color: 'var(--primary-color)', fontWeight: 'bold' }}>${item.price.toFixed(2)}</p>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="empty-state" style={{ padding: '2rem' }}>
+                        <h3 className="empty-state-title">Your wishlist is empty</h3>
+                        <p className="empty-state-text">Explore products and add them to your wishlist!</p>
+                        <button onClick={() => navigate('/')} className="btn btn-secondary">Start Shopping</button>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
