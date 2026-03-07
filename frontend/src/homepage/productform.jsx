@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router';
@@ -30,7 +31,7 @@ function ProductForm({ setProducts }) {
         if (id) {
             const fetchProduct = async () => {
                 try {
-                    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/products/${id}`);
+                    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/products/${id}`);
                     const product = response.data;
                     setName(product.name);
                     setDescription(product.description);
@@ -68,11 +69,11 @@ function ProductForm({ setProducts }) {
         try {
             let response;
             if (id) {
-                response = await axios.put(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/products/${id}`, formData, {
+                response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/products/${id}`, formData, {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 });
             } else {
-                response = await axios.post(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/products`, formData, {
+                response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/products`, formData, {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 });
             }
@@ -84,12 +85,12 @@ function ProductForm({ setProducts }) {
                 }
             });
             if (response.data.success) {
-                alert(response.data.message);
+                toast(response.data.message);
                 navigate('/');
             }
         } catch (error) {
             console.error('Error in adding or editing the product:', error);
-            alert('Error in adding or editing the product');
+            toast('Error in adding or editing the product');
         } finally {
             setIsLoading(false);
         }
@@ -141,7 +142,7 @@ function ProductForm({ setProducts }) {
                     {(existingImages.length > 0 || images.length > 0) && (
                         <div className="image-preview-grid">
                             {existingImages.map((image, index) => (
-                                <img key={`existing-${index}`} src={`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/${image}`} alt={`Preview ${index}`} className="image-preview-item" />
+                                <img key={`existing-${index}`} src={`${import.meta.env.VITE_BACKEND_URL}/${image}`} alt={`Preview ${index}`} className="image-preview-item" />
                             ))}
                             {images.map((image, index) => (
                                 <img key={`new-${index}`} src={URL.createObjectURL(image)} alt={`Preview ${index}`} className="image-preview-item" />

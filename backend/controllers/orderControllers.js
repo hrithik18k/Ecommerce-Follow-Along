@@ -20,6 +20,14 @@ const placeOrder = async (req, res) => {
 
         const createdOrder = await newOrder.save();
 
+        // After saving the order, update stock
+        for (const item of products) {
+            await Product.findByIdAndUpdate(
+                item.productId,
+                { $inc: { stock: -item.quantity } }
+            );
+        }
+
         // Clear the user's cart
         await User.findByIdAndUpdate(user._id, { cart: [] });
 

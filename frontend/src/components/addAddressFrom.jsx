@@ -15,7 +15,7 @@ const AddAddressForm = () => {
         e.preventDefault();
         try {
             const email = localStorage.getItem("email");
-            await axios.put(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/users/profile/${email}/address`, address);
+            await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/users/profile/${email}/address`, address);
             navigate('/profile');
         } catch (error) {
             console.error('Error updating address:', error);

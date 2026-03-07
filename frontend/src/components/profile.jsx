@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -12,7 +13,7 @@ const Profile = () => {
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/users/profile/${email}`);
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/users/profile/${email}`);
                 setUser(response.data);
             } catch (error) {
                 console.error('Error fetching user profile:', error);
@@ -32,7 +33,7 @@ const Profile = () => {
         if (profilePicture) formData.append('profilePicture', profilePicture);
 
         try {
-            const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/users/profile/${email}`, formData, {
+            const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/users/profile/${email}`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             const updatedUser = response.data.user;
@@ -44,7 +45,7 @@ const Profile = () => {
 
             setUser(updatedUser);
             setIsEditing(false);
-            alert('Profile updated successfully');
+            toast('Profile updated successfully');
 
             // Optional: If email changed, you might want to refresh the page to update all components
             if (updatedUser.email !== email) {
@@ -52,13 +53,13 @@ const Profile = () => {
             }
         } catch (error) {
             console.error('Error updating profile:', error);
-            alert(error.response?.data?.message || 'Error updating profile');
+            toast(error.response?.data?.message || 'Error updating profile');
         }
     };
 
     const handleDeleteAddress = async (index) => {
         try {
-            const response = await axios.delete(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/users/profile/${email}/address`, { data: { index } });
+            const response = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/users/profile/${email}/address`, { data: { index } });
             setUser(response.data.user);
         } catch (error) {
             console.error('Error deleting address:', error);
@@ -86,7 +87,7 @@ const Profile = () => {
             <h1 className="page-title">My Profile</h1>
 
             <div className="profile-card">
-                <img src={`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/${user.profilePicture}`} alt="Profile" className="profile-avatar" />
+                <img src={`${import.meta.env.VITE_BACKEND_URL}/${user.profilePicture}`} alt="Profile" className="profile-avatar" />
                 <h2 className="profile-user-name">{user.name}</h2>
                 <p className="profile-user-email">{user.email}</p>
                 <div className="profile-user-role">
@@ -151,7 +152,7 @@ const Profile = () => {
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
                         {user.wishlist.map((item) => (
                             <div key={item._id} style={{ border: '1px solid var(--border-color)', borderRadius: '10px', padding: '1rem', width: '200px', cursor: 'pointer', background: 'var(--card-bg)' }} onClick={() => navigate(`/product/${item._id}`)}>
-                                <img src={item.imageUrl && item.imageUrl.length > 0 ? `${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/${item.imageUrl[0]}` : ''} alt={item.name} style={{ width: '100%', height: '150px', objectFit: 'cover', borderRadius: '5px' }} />
+                                <img src={item.imageUrl && item.imageUrl.length > 0 ? `${import.meta.env.VITE_BACKEND_URL}/${item.imageUrl[0]}` : ''} alt={item.name} style={{ width: '100%', height: '150px', objectFit: 'cover', borderRadius: '5px' }} />
                                 <h4 style={{ marginTop: '0.5rem', fontSize: '1.1rem', color: 'var(--text-color)' }}>{item.name}</h4>
                                 <p style={{ color: 'var(--primary-color)', fontWeight: 'bold' }}>${item.price.toFixed(2)}</p>
                             </div>

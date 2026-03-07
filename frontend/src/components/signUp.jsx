@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
@@ -37,16 +38,16 @@ const SignUp = () => {
         }
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/users/register`, formData, {
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/users/register`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             if (response.data.user) {
-                alert('Account created successfully!');
+                toast('Account created successfully!');
                 navigate('/login');
             }
         } catch (error) {
             console.error('Error registering user:', error);
-            alert('Error registering user');
+            toast('Error registering user');
         } finally {
             setIsLoading(false);
         }

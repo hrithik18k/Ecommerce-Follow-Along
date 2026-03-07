@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import axios from 'axios';
@@ -18,7 +19,7 @@ const ProductDetails = () => {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/products/${id}`);
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/products/${id}`);
                 setProduct(response.data);
             } catch (error) {
                 console.error("Error fetching product:", error);
@@ -28,7 +29,7 @@ const ProductDetails = () => {
         const checkWishlist = async () => {
             if (!userEmail) return;
             try {
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/users/wishlist/${userEmail}`);
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/users/wishlist/${userEmail}`);
                 const wishlistedIds = response.data.map(product => typeof product === 'string' ? product : product._id);
                 setIsWishlisted(wishlistedIds.includes(id));
             } catch (error) {
@@ -41,15 +42,15 @@ const ProductDetails = () => {
     }, [id, userEmail]);
 
     const handleAddToCart = async () => {
-        if (!userEmail) { alert('Please sign in to add to cart'); return; }
-        if (quantity > product.stock) { alert('Quantity exceeds available stock'); return; }
+        if (!userEmail) { toast('Please sign in to add to cart'); return; }
+        if (quantity > product.stock) { toast('Quantity exceeds available stock'); return; }
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/users/cart`, {
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/users/cart`, {
                 email: userEmail, productId: product._id, quantity: parseInt(quantity)
-            });
+            }, { headers: { Authorization: `Bearer ${token}` } });
             if (response.status === 200) {
-                alert(`Added ${quantity} to cart`);
+                toast(`Added ${quantity} to cart`);
             }
         } catch (error) {
             console.error('Error adding product to cart:', error);
@@ -58,13 +59,13 @@ const ProductDetails = () => {
 
     const getImageUrl = (url) => {
         if (!url) return '';
-        return url.startsWith('http') ? url : `${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/${url}`;
+        return url.startsWith('http') ? url : `${import.meta.env.VITE_BACKEND_URL}/${url}`;
     };
 
     const handleWishlistToggle = async () => {
-        if (!userEmail) { alert('Please sign in to wishlist products'); return; }
+        if (!userEmail) { toast('Please sign in to wishlist products'); return; }
         try {
-            await axios.post(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/users/wishlist/${userEmail}`, { productId: id });
+            await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/users/wishlist/${userEmail}`, { productId: id });
             setIsWishlisted(!isWishlisted);
         } catch (error) {
             console.error('Error toggling wishlist', error);
@@ -75,16 +76,16 @@ const ProductDetails = () => {
         e.preventDefault();
         try {
             const config = { headers: { Authorization: `Bearer ${token}` } };
-            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/products/${id}/reviews`, { rating, comment }, config);
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/products/${id}/reviews`, { rating, comment }, config);
             if (response.status === 201) {
-                alert("Review submitted successfully");
+                toast("Review submitted successfully");
                 setComment("");
                 // Reload product to show recent review
-                const productRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/products/${id}`);
+                const productRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/products/${id}`);
                 setProduct(productRes.data);
             }
         } catch (error) {
-            alert(error.response?.data?.message || 'Error submitting review');
+            toast(error.response?.data?.message || 'Error submitting review');
         }
     };
 
