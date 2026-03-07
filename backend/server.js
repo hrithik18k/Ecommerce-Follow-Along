@@ -5,13 +5,20 @@ const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser"); // Import cookie-parser
 
 // Import routes
-const productRoutes = require("./routes/productRoutrs");
+const productRoutes = require("./routes/productRoutes");
 const userRoutes = require("./routes/userRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 
 dotenv.config(); // Load environment variables from .env file
 
 const app = express();
+const rateLimit = require('express-rate-limit');
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per `window`
+    message: 'Too many requests from this IP, please try again after 15 minutes'
+});
+app.use('/api', limiter);
 
 // CORS configuration
 const corsOptions = {

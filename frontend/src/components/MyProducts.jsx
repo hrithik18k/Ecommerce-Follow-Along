@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast';
 import { useEffect, useState } from "react";
 import Card from "../homepage/card";
 import axios from 'axios';
@@ -14,12 +15,12 @@ const MyProducts = ({ products }) => {
 
     const handleDelete = async (id) => {
         try {
-            const response = await axios.delete(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/products/${id}`);
+            const response = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/products/${id}`);
             if (response.data.success) {
                 setMyProducts(myProducts.filter(product => product._id !== id));
-                alert(response.data.message);
+                toast(response.data.message);
             }
-            await axios.delete(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/users/cart/${email}/${id}`);
+            await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/users/cart/${email}/${id}`);
         } catch (error) {
             console.error('Error deleting product:', error);
         }

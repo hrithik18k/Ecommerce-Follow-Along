@@ -8,10 +8,10 @@ const MyOrdersPage = () => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/orders/user-orders`, {
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/orders/user-orders`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
-                setOrders(response.data.orders);
+                setOrders(response.data);
             } catch (error) {
                 console.error('Error fetching orders:', error);
             }
@@ -21,7 +21,7 @@ const MyOrdersPage = () => {
 
     const handleCancelOrder = async (orderId) => {
         try {
-            const response = await axios.patch(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/orders/${orderId}/cancel`, {}, {
+            const response = await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/api/orders/${orderId}/cancel`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (response.status === 200) {

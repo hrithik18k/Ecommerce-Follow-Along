@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -13,7 +14,7 @@ const SelectAddressPage = () => {
     useEffect(() => {
         const fetchAddresses = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/users/profile/${userEmail}`);
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/users/profile/${userEmail}`);
                 setAddresses(response.data.addresses || []);
             } catch (error) {
                 console.error('Error fetching addresses:', error);
@@ -26,7 +27,7 @@ const SelectAddressPage = () => {
         if (selectedAddress) {
             navigate('/order-confirmation', { state: { cartItems, selectedAddress, totalPrice } });
         } else {
-            alert('Please select an address');
+            toast('Please select an address');
         }
     };
 

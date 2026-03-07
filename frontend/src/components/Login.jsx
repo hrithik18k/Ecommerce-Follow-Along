@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast';
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -29,7 +30,7 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/users/login`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -46,11 +47,11 @@ const Login = () => {
         navigate('/');
       } else {
         const data = await response.json();
-        alert(data.message);
+        toast(data.message);
       }
     } catch (error) {
       console.error('Error logging in:', error);
-      alert('Error logging in');
+      toast('Error logging in');
     } finally {
       setIsLoading(false);
     }

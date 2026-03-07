@@ -10,10 +10,10 @@ router.post('/register', upload.single('profilePicture'), registerUser);
 router.post('/login', loginUser);
 router.get('/profile/:email', getUserProfile);
 router.put('/profile/:email', upload.single('profilePicture'), updateUserProfile);
-router.post('/cart', addToCart);
-router.get('/cart/:email', getCartItems);
-router.post('/cart/quantity', updateCartItemQuantity);
-router.delete('/cart/:email/:productId', deleteCartItem);
+router.post('/cart', protect, addToCart);
+router.get('/cart/:email', protect, getCartItems);
+router.post('/cart/quantity', protect, updateCartItemQuantity);
+router.delete('/cart/:email/:productId', protect, deleteCartItem);
 router.put('/profile/:email/address', addAddress);
 router.delete('/profile/:email/address', deleteAddress);
 

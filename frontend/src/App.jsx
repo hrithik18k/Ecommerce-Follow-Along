@@ -1,6 +1,7 @@
 import './App.css';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import ProductForm from './homepage/productform';
+import { Toaster } from 'react-hot-toast';
 import { useEffect, useState } from 'react';
 import Home from './homepage/Home';
 import axios from 'axios';
@@ -45,7 +46,7 @@ function App() {
 
     const fetchProducts = async () => {
         try {
-            let res = await axios.get(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/products`);
+            let res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/products`);
             setProducts(res.data);
         } catch (error) {
             console.log("Error: ", error.message);
@@ -54,7 +55,7 @@ function App() {
 
     const fetchUserProfile = async () => {
         try {
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/users/profile/${email}`);
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/users/profile/${email}`);
             setUser(response.data);
         } catch (error) {
             console.error('Error fetching user profile:', error);
@@ -85,6 +86,7 @@ function App() {
 
     return (
         <div>
+            <Toaster position="top-center" />
             {!isAuthPage && (
                 <nav className="navbar">
                     <div className="navbar-left">
@@ -126,7 +128,7 @@ function App() {
                                 )}
                                 {user && (
                                     <Link to="/profile" className="profile-info">
-                                        <img src={`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/${user.profilePicture}`} alt="Profile" className="profile-image" />
+                                        <img src={`${import.meta.env.VITE_BACKEND_URL}/${user.profilePicture}`} alt="Profile" className="profile-image" />
                                         <span className="profile-name">{user.name}</span>
                                         <span className={getRoleBadgeClass(role)}>{role}</span>
                                     </Link>

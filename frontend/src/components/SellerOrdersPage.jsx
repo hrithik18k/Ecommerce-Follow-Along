@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -11,10 +12,10 @@ const SellerOrdersPage = () => {
     useEffect(() => {
         const fetchSellerOrders = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/orders/seller-orders`, {
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/orders/seller-orders`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
-                setOrders(response.data.orders);
+                setOrders(response.data);
             } catch (error) {
                 console.error('Error fetching seller orders:', error);
             } finally {
@@ -26,17 +27,17 @@ const SellerOrdersPage = () => {
 
     const handleUpdateStatus = async (orderId, newStatus) => {
         try {
-            const response = await axios.patch(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/orders/${orderId}/status`,
+            const response = await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/api/orders/${orderId}/status`,
                 { status: newStatus },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
             if (response.status === 200) {
                 setOrders(orders.map(order => order._id === orderId ? { ...order, status: newStatus } : order));
-                alert('Order status updated successfully');
+                toast('Order status updated successfully');
             }
         } catch (error) {
             console.error('Error updating status:', error);
-            alert('Failed to update status');
+            toast('Failed to update status');
         }
     };
 

@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
@@ -19,10 +20,10 @@ const AdminDashboard = () => {
                     }
                 };
 
-                const statsResponse = await axios.get(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/users/stats`, config);
+                const statsResponse = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/users/stats`, config);
                 setStats(statsResponse.data);
 
-                const usersResponse = await axios.get(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/users/all`, config);
+                const usersResponse = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/users/all`, config);
                 setUsers(usersResponse.data);
 
                 setLoading(false);
@@ -45,14 +46,14 @@ const AdminDashboard = () => {
                     Authorization: `Bearer ${token}`
                 }
             };
-            await axios.put(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/users/role`, { userId, role: newRole }, config);
+            await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/users/role`, { userId, role: newRole }, config);
 
             // Update local state
             setUsers(users.map(user => user._id === userId ? { ...user, role: newRole } : user));
-            alert("User role updated successfully!");
+            toast("User role updated successfully!");
         } catch (err) {
             console.error("Error updating user role:", err);
-            alert("Failed to update user role.");
+            toast("Failed to update user role.");
         }
     };
 

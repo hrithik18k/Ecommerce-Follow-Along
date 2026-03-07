@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast';
 import React from 'react';
 import { Link } from "react-router-dom";
 import axios from 'axios';
@@ -6,14 +7,18 @@ function Card({ id, name, image, description, price, showEditButton, onDelete, s
     const handleAddToCart = async () => {
         const userEmail = localStorage.getItem('email');
         if (!userEmail) {
-            alert('Please sign in to add products to your cart.');
+            toast('Please sign in to add products to your cart.');
             return;
         }
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/api/users/cart`, { email: userEmail, productId: id, quantity: 1 });
+            const token = localStorage.getItem('token');
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/users/cart`,
+                { email: userEmail, productId: id, quantity: 1 },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
             if (response.status === 200) {
-                alert('Product added to cart');
+                toast('Product added to cart');
             } else {
                 console.error('Failed to add product to cart');
             }
@@ -26,7 +31,7 @@ function Card({ id, name, image, description, price, showEditButton, onDelete, s
         <>
             <div className="product-card-image-wrapper">
                 <img
-                    src={image && image.startsWith('http') ? image : `${import.meta.env.VITE_BACKEND_URL || "https://ecommerce-follow-along-1-1fss.onrender.com"}/${image}`}
+                    src={image && image.startsWith('http') ? image : `${import.meta.env.VITE_BACKEND_URL}/${image}`}
                     alt={name}
                     className="product-card-image"
                 />
