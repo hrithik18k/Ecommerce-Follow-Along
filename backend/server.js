@@ -8,6 +8,8 @@ const cookieParser = require("cookie-parser"); // Import cookie-parser
 const productRoutes = require("./routes/productRoutes");
 const userRoutes = require("./routes/userRoutes");
 const orderRoutes = require("./routes/orderRoutes");
+const couponRoutes = require("./routes/couponRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
 
 dotenv.config(); // Load environment variables from .env file
 
@@ -41,6 +43,8 @@ app.use("/api", productRoutes);
 app.use("/api/users", userRoutes);
 app.use("/uploads", express.static("uploads")); // Serve static files for uploaded images
 app.use("/api/orders", orderRoutes);
+app.use("/api/coupons", couponRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 // Root route
 app.get("/", (req, res) => {

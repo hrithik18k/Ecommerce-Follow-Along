@@ -40,6 +40,63 @@ const MyOrdersPage = () => {
         }
     };
 
+    const renderStepper = (status, statusHistory = []) => {
+        const steps = ['Pending', 'Processing', 'Shipped', 'Delivered'];
+
+        if (status === 'Canceled') {
+            const cancelHistory = statusHistory.find(h => h.status === 'Canceled');
+            return (
+                <div style={{ color: 'var(--color-danger)', fontWeight: 'bold', margin: '1rem 0', padding: '1rem', background: 'rgba(248, 113, 113, 0.1)', borderRadius: 'var(--radius-md)' }}>
+                    ❌ Order Canceled
+                    {cancelHistory &&
+                        <span style={{ display: 'block', marginTop: '0.5rem', fontSize: '0.85rem', color: 'var(--color-danger)', opacity: 0.8 }}>
+                            on {new Date(cancelHistory.timestamp).toLocaleString()}
+                        </span>
+                    }
+                </div>
+            );
+        }
+
+        const currentStepIndex = steps.indexOf(status);
+
+        return (
+            <div className="order-timeline" style={{ display: 'flex', justifyContent: 'space-between', margin: '2rem 0', position: 'relative' }}>
+                <div style={{ position: 'absolute', top: '15px', left: 'auto', right: 'auto', width: '100%', height: '2px', background: 'var(--border)', zIndex: 0 }}></div>
+                {steps.map((step, idx) => {
+                    const historyItem = statusHistory.find(h => h.status === step);
+                    const isCompleted = currentStepIndex >= idx;
+                    const isCurrent = currentStepIndex === idx;
+
+                    return (
+                        <div key={step} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 1, position: 'relative', width: '25%' }}>
+                            <div style={{
+                                width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                background: isCompleted ? 'var(--color-accent)' : 'var(--surface)',
+                                border: `2px solid ${isCompleted ? 'var(--color-accent)' : 'var(--border)'}`,
+                                color: isCompleted ? '#fff' : 'var(--text-secondary)',
+                                fontWeight: 'bold', fontSize: '0.9rem', marginBottom: '0.5rem',
+                                transition: 'all 0.3s ease'
+                            }}>
+                                {isCompleted ? '✓' : idx + 1}
+                            </div>
+                            <div style={{ textAlign: 'center' }}>
+                                <div style={{ fontWeight: isCurrent ? 'bold' : 'normal', color: isCompleted ? 'var(--text-primary)' : 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                                    {step}
+                                </div>
+                                {historyItem && (
+                                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
+                                        {new Date(historyItem.timestamp).toLocaleDateString()}<br />
+                                        {new Date(historyItem.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    };
+
     return (
         <div className="page-container" style={{ maxWidth: '900px', margin: '0 auto' }}>
             <h1 className="page-title">My Orders</h1>
@@ -49,9 +106,18 @@ const MyOrdersPage = () => {
                 orders.map((order, index) => (
                     <div key={order._id} className="order-card" style={{ animationDelay: `${index * 0.08}s` }}>
                         <div className="order-header">
-                            <div className="order-id">Order #{order._id.slice(-8).toUpperCase()}</div>
+                            <div className="order-id">
+                                Order #{order._id.slice(-8).toUpperCase()}
+                                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.2rem', fontWeight: 'normal' }}>
+                                    Placed on {new Date(order.createdAt).toLocaleDateString()}
+                                </div>
+                            </div>
                             <span className={getStatusClass(order.status)}>{order.status}</span>
                         </div>
+
+                        {/* Order Timeline Stepper */}
+                        {renderStepper(order.status, order.statusHistory)}
+
                         <div className="order-products-list">
                             {order.products.map(product => (
                                 <div key={product.productId._id} className="order-product-item">

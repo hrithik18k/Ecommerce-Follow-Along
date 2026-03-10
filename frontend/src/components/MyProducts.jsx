@@ -34,7 +34,7 @@ const MyProducts = ({ products }) => {
                 {myProducts.length > 0 ? (
                     myProducts.map((prod, index) => (
                         <div key={prod._id} style={{ animationDelay: `${index * 0.05}s` }}>
-                            <Card id={prod._id} name={prod.name} image={prod.imageUrl[0]} description={prod.description} price={prod.price} showEditButton={true} onDelete={handleDelete} showDetailsLink={false} showAddToCartButton={false} />
+                            <Card id={prod._id} name={prod.name} image={prod.imageUrl[0]} description={prod.description} price={prod.price} showEditButton={true} onDelete={handleDelete} showDetailsLink={false} showAddToCartButton={false} fullProduct={prod} />
                         </div>
                     ))
                 ) : (

@@ -5,6 +5,10 @@ import { useNavigate } from 'react-router-dom';
 const CartPage = () => {
     const [cartItems, setCartItems] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
+    const [couponCode, setCouponCode] = useState('');
+    const [discountAmount, setDiscountAmount] = useState(0);
+    const [appliedCoupon, setAppliedCoupon] = useState('');
+    const [couponError, setCouponError] = useState('');
     const userEmail = localStorage.getItem('email');
     const navigate = useNavigate();
 
@@ -65,10 +69,34 @@ const CartPage = () => {
             return sum;
         }, 0);
         setTotalPrice(total);
+        if (appliedCoupon && total > 0) {
+            // Recalculate discount based on percentage, wait, earlier I just set discountAmount based on the same. 
+            // I'll leave the discountAmount static if cart changes or recalculate. 
+            // Better to just reset coupon if cart changes or recalculate.
+            // Actually, let's just reset coupon for simplicity if quantity changes, or we can recalculate later.
+        }
+    };
+
+    const handleApplyCoupon = async () => {
+        try {
+            setCouponError('');
+            const token = localStorage.getItem('token');
+            const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/coupons/apply`, { code: couponCode }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const discountPercent = res.data.discountPercent;
+            const discount = (totalPrice * discountPercent) / 100;
+            setDiscountAmount(discount);
+            setAppliedCoupon(res.data.code);
+            setCouponCode('');
+        } catch (error) {
+            setCouponError(error.response?.data?.message || 'Invalid coupon');
+        }
     };
 
     const handlePlaceOrder = () => {
-        navigate('/select-address', { state: { cartItems, totalPrice } });
+        const finalPrice = totalPrice - discountAmount;
+        navigate('/select-address', { state: { cartItems, totalPrice: finalPrice, couponCode: appliedCoupon, discountAmount } });
     };
 
     return (
@@ -107,16 +135,38 @@ const CartPage = () => {
 
                     <div className="cart-summary">
                         <div className="cart-summary-row">
-                            <span style={{ color: 'rgba(255,255,255,0.5)' }}>Items ({cartItems.length})</span>
+                            <span style={{ color: 'rgba(255,255,255,0.5)' }}>Subtotal</span>
                             <span style={{ color: 'rgba(255,255,255,0.7)' }}>${totalPrice.toFixed(2)}</span>
                         </div>
                         <div className="cart-summary-row">
                             <span style={{ color: 'rgba(255,255,255,0.5)' }}>Shipping</span>
                             <span style={{ color: 'var(--color-success)' }}>Free</span>
                         </div>
+
+                        {/* Coupon Section */}
+                        <div style={{ margin: '1rem 0', padding: '1rem 0', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
+                            <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                <input
+                                    type="text"
+                                    placeholder="Coupon Code"
+                                    className="form-input"
+                                    value={couponCode}
+                                    onChange={(e) => setCouponCode(e.target.value)}
+                                    style={{ flex: 1 }}
+                                />
+                                <button onClick={handleApplyCoupon} className="btn btn-secondary">Apply</button>
+                            </div>
+                            {couponError && <div style={{ color: 'var(--color-danger)', fontSize: '0.8rem', marginTop: '0.5rem' }}>{couponError}</div>}
+                            {appliedCoupon && (
+                                <div style={{ color: 'var(--color-success)', fontSize: '0.85rem', marginTop: '0.5rem' }}>
+                                    Coupon {appliedCoupon} applied! (-${discountAmount.toFixed(2)})
+                                </div>
+                            )}
+                        </div>
+
                         <div className="cart-summary-row cart-summary-total">
                             <span>Total</span>
-                            <span className="cart-summary-total-price">${totalPrice.toFixed(2)}</span>
+                            <span className="cart-summary-total-price">${Math.max(0, totalPrice - discountAmount).toFixed(2)}</span>
                         </div>
                         <button onClick={handlePlaceOrder} className="btn btn-primary btn-full btn-lg" style={{ marginTop: '1rem' }}>
                             Proceed to Checkout

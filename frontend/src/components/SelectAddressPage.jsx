@@ -9,7 +9,7 @@ const SelectAddressPage = () => {
     const userEmail = localStorage.getItem('email');
     const navigate = useNavigate();
     const location = useLocation();
-    const { cartItems, totalPrice } = location.state;
+    const { cartItems, totalPrice, couponCode, discountAmount } = location.state;
 
     useEffect(() => {
         const fetchAddresses = async () => {
@@ -25,7 +25,7 @@ const SelectAddressPage = () => {
 
     const handleConfirmOrder = () => {
         if (selectedAddress) {
-            navigate('/order-confirmation', { state: { cartItems, selectedAddress, totalPrice } });
+            navigate('/order-confirmation', { state: { cartItems, selectedAddress, totalPrice, couponCode, discountAmount } });
         } else {
             toast('Please select an address');
         }

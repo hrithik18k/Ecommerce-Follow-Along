@@ -33,7 +33,20 @@ const orderSchema = new mongoose.Schema({
     status: {
         type: String,
         default: 'Pending'
-    }
+    },
+    couponCode: {
+        type: String
+    },
+    discountAmount: {
+        type: Number,
+        default: 0
+    },
+    statusHistory: [
+        {
+            status: { type: String, required: true },
+            timestamp: { type: Date, default: Date.now }
+        }
+    ]
 }, { timestamps: true });
 
 const Order = mongoose.model('Order', orderSchema);

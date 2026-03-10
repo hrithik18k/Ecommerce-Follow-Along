@@ -12,6 +12,7 @@ const ProductDetails = () => {
     const [rating, setRating] = useState(5);
     const [comment, setComment] = useState("");
     const [isWishlisted, setIsWishlisted] = useState(false);
+    const [recentProducts, setRecentProducts] = useState([]);
 
     const userEmail = useSelector(state => state.user.email);
     const token = useSelector(state => state.user.token);
@@ -21,6 +22,28 @@ const ProductDetails = () => {
             try {
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/products/${id}`);
                 setProduct(response.data);
+
+                // Track recently viewed products
+                const prod = response.data;
+                const recentStr = localStorage.getItem('recent_products');
+                let recent = recentStr ? JSON.parse(recentStr) : [];
+
+                // Remove if already exists
+                recent = recent.filter(p => p._id !== prod._id);
+                // Add to beginning
+                recent.unshift({
+                    _id: prod._id,
+                    name: prod.name,
+                    price: prod.price,
+                    imageUrl: prod.imageUrl[0]
+                });
+                // Keep only last 10
+                if (recent.length > 10) recent = recent.slice(0, 10);
+
+                localStorage.setItem('recent_products', JSON.stringify(recent));
+                // Set state excluding current product
+                setRecentProducts(recent.filter(p => p._id !== prod._id));
+
             } catch (error) {
                 console.error("Error fetching product:", error);
             }
@@ -188,6 +211,25 @@ const ProductDetails = () => {
                     </div>
                 )}
             </div>
+
+            {recentProducts && recentProducts.length > 0 && (
+                <div style={{ marginTop: '3rem', padding: '2rem', background: 'var(--surface)', borderRadius: 'var(--radius-lg)' }}>
+                    <h2 style={{ marginBottom: '1.5rem', fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}>Recently Viewed</h2>
+                    <div style={{ display: 'flex', gap: '1.5rem', overflowX: 'auto', paddingBottom: '1rem' }}>
+                        {recentProducts.map(prod => (
+                            <div key={prod._id} style={{ minWidth: '200px', width: '200px', background: 'var(--card-bg)', borderRadius: 'var(--radius-md)', padding: '1rem', border: '1px solid var(--border)', cursor: 'pointer' }} onClick={() => window.location.href = `/product/${prod._id}`}>
+                                <img
+                                    src={getImageUrl(prod.imageUrl)}
+                                    alt={prod.name}
+                                    style={{ width: '100%', height: '150px', objectFit: 'cover', borderRadius: 'var(--radius-sm)', marginBottom: '1rem' }}
+                                />
+                                <h3 style={{ fontSize: '1rem', margin: '0 0 0.5rem 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{prod.name}</h3>
+                                <div style={{ color: 'var(--color-accent)', fontWeight: 'bold' }}>${prod.price.toFixed(2)}</div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

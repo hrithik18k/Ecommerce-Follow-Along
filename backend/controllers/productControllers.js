@@ -28,30 +28,53 @@ const createProduct = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
     try {
-        if (!req.query.page && !req.query.keyword) {
+        const { minPrice, maxPrice, sort, page, limit, keyword } = req.query;
+
+        let queryObj = {};
+
+        if (keyword) {
+            queryObj.name = { $regex: keyword, $options: 'i' };
+        }
+
+        if (minPrice !== undefined || maxPrice !== undefined) {
+            queryObj.price = {};
+            if (minPrice !== undefined && minPrice !== '') queryObj.price.$gte = Number(minPrice);
+            if (maxPrice !== undefined && maxPrice !== '') queryObj.price.$lte = Number(maxPrice);
+        }
+
+        let sortObj = {};
+        if (sort === 'price_asc') sortObj.price = 1;
+        else if (sort === 'price_desc') sortObj.price = -1;
+        else if (sort === 'newest') sortObj.createdAt = -1;
+        else if (sort === 'top_rated') sortObj.rating = -1;
+
+        if (!page && !keyword && !minPrice && !maxPrice && !sort) {
             const products = await Product.find();
             return res.status(200).json(products);
         }
 
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
-        const skip = (page - 1) * limit;
+        // Always apply sortObj if sort is provided, even without pagination
+        if (!page && !limit && sort) {
+            const products = await Product.find(queryObj).sort(sortObj);
+            return res.status(200).json(products);
+        }
 
-        const keyword = req.query.keyword
-            ? {
-                name: {
-                    $regex: req.query.keyword,
-                    $options: 'i',
-                },
-            }
-            : {};
+        const pageNum = parseInt(page) || 1;
+        const limitNum = parseInt(limit) || 10;
+        const skip = (pageNum - 1) * limitNum;
 
-        const count = await Product.countDocuments({ ...keyword });
-        const products = await Product.find({ ...keyword })
-            .limit(limit)
+        const count = await Product.countDocuments(queryObj);
+        let productsQuery = Product.find(queryObj);
+
+        if (Object.keys(sortObj).length > 0) {
+            productsQuery = productsQuery.sort(sortObj);
+        }
+
+        const products = await productsQuery
+            .limit(limitNum)
             .skip(skip);
 
-        res.status(200).json({ products, page, pages: Math.ceil(count / limit), total: count });
+        res.status(200).json({ products, page: pageNum, pages: Math.ceil(count / limitNum), total: count });
     } catch (error) {
         console.error('Error fetching products:', error);
         res.status(500).json({ message: 'Error fetching products', error: error.message });
