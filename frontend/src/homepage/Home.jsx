@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Card from "./card";
 
 const Home = ({ products }) => {
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [sortBy, setSortBy] = useState('');
     const [minPrice, setMinPrice] = useState('');
@@ -50,79 +51,125 @@ const Home = ({ products }) => {
     return (
         <div className="page-container">
             <div style={{ marginBottom: '2rem' }}>
-                <h1 className="page-title">Discover Products</h1>
-                <p className="page-subtitle">
-                    Explore our curated collection of premium products
-                </p>
-
-                {/* Category Filter */}
-                <div className="category-filter-container" style={{
-                    display: 'flex',
-                    gap: '0.75rem',
-                    overflowX: 'auto',
-                    padding: '1rem 0',
-                    scrollbarWidth: 'none',
-                    msOverflowStyle: 'none'
-                }}>
-                    {categories.map(cat => (
-                        <button
-                            key={cat}
-                            onClick={() => setSelectedCategory(cat)}
-                            style={{
-                                padding: '0.5rem 1.25rem',
-                                borderRadius: '2rem',
-                                border: '1px solid var(--border-color)',
-                                backgroundColor: selectedCategory === cat ? 'var(--primary-color)' : 'transparent',
-                                color: selectedCategory === cat ? 'white' : 'var(--text-color)',
-                                cursor: 'pointer',
-                                whiteSpace: 'nowrap',
-                                transition: 'all 0.2s ease',
-                                fontSize: '0.9rem',
-                                fontWeight: '500'
-                            }}
-                            className="category-btn"
-                        >
-                            {cat}
-                        </button>
-                    ))}
-                </div>
-
-                {/* Sort & Filter Controls (Client-side) */}
-                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center', marginBottom: '1rem' }}>
-                    <select
-                        value={sortBy}
-                        onChange={(e) => setSortBy(e.target.value)}
-                        className="form-input"
-                        style={{ width: 'auto', flex: '1 1 200px' }}
-                    >
-                        <option value="">Sort By...</option>
-                        <option value="price_asc">Price: Low to High</option>
-                        <option value="price_desc">Price: High to Low</option>
-                        <option value="newest">Newest Arrivals</option>
-                        <option value="top_rated">Top Rated</option>
-                    </select>
-
-                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flex: '1 1 300px' }}>
-                        <span style={{ color: 'var(--text-secondary)' }}>Price Range:</span>
-                        <input
-                            type="number"
-                            placeholder="Min $"
-                            value={minPrice}
-                            onChange={(e) => setMinPrice(e.target.value)}
-                            className="form-input"
-                            style={{ width: '100px' }}
-                        />
-                        <span style={{ color: 'var(--text-secondary)' }}>-</span>
-                        <input
-                            type="number"
-                            placeholder="Max $"
-                            value={maxPrice}
-                            onChange={(e) => setMaxPrice(e.target.value)}
-                            className="form-input"
-                            style={{ width: '100px' }}
-                        />
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
+                    <div>
+                        <h1 className="page-title">Discover Products</h1>
+                        <p className="page-subtitle">
+                            Explore our curated collection of premium products
+                        </p>
                     </div>
+
+                    <button
+                        onClick={() => setIsFilterOpen(!isFilterOpen)}
+                        className="btn btn-glass"
+                        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.2rem', borderRadius: 'var(--radius-md)', backgroundColor: isFilterOpen ? 'var(--surface-active)' : 'transparent', borderColor: isFilterOpen ? 'var(--color-accent)' : 'var(--border)' }}
+                    >
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="9" cy="6" r="2"></circle>
+                            <line x1="3" y1="6" x2="7" y2="6"></line>
+                            <line x1="11" y1="6" x2="21" y2="6"></line>
+                            <circle cx="17" cy="12" r="2"></circle>
+                            <line x1="3" y1="12" x2="15" y2="12"></line>
+                            <line x1="19" y1="12" x2="21" y2="12"></line>
+                            <circle cx="11" cy="18" r="2"></circle>
+                            <line x1="3" y1="18" x2="9" y2="18"></line>
+                            <line x1="13" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                        Filters
+                    </button>
                 </div>
+
+                {/* Filter Dropdown Panel */}
+                {isFilterOpen && (
+                    <div style={{
+                        marginTop: '1.5rem',
+                        padding: '1.5rem',
+                        background: 'var(--navbar-bg)',
+                        backdropFilter: 'blur(12px)',
+                        WebkitBackdropFilter: 'blur(12px)',
+                        border: '1px solid var(--border)',
+                        borderRadius: 'var(--radius-lg)',
+                        animation: 'fadeInUp 0.3s ease',
+                        boxShadow: '0 10px 40px rgba(0,0,0,0.2)'
+                    }}>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                            {/* Category Filter */}
+                            <div>
+                                <h4 style={{ marginBottom: '0.8rem', fontSize: '0.95rem', color: 'var(--text-primary)', fontWeight: '600' }}>Category</h4>
+                                <div style={{
+                                    display: 'flex',
+                                    gap: '0.5rem',
+                                    flexWrap: 'wrap'
+                                }}>
+                                    {categories.map(cat => (
+                                        <button
+                                            key={cat}
+                                            onClick={() => setSelectedCategory(cat)}
+                                            style={{
+                                                padding: '0.4rem 1.2rem',
+                                                borderRadius: '2rem',
+                                                border: '1px solid',
+                                                borderColor: selectedCategory === cat ? 'var(--color-accent)' : 'var(--border)',
+                                                backgroundColor: selectedCategory === cat ? 'rgba(139, 92, 246, 0.15)' : 'transparent',
+                                                color: selectedCategory === cat ? 'var(--color-accent)' : 'var(--text-secondary)',
+                                                cursor: 'pointer',
+                                                transition: 'all 0.2s ease',
+                                                fontSize: '0.85rem',
+                                                fontWeight: '500'
+                                            }}
+                                        >
+                                            {cat}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+                                {/* Sort Filter */}
+                                <div style={{ flex: '1 1 200px' }}>
+                                    <h4 style={{ marginBottom: '0.8rem', fontSize: '0.95rem', color: 'var(--text-primary)', fontWeight: '600' }}>Sort By</h4>
+                                    <select
+                                        value={sortBy}
+                                        onChange={(e) => setSortBy(e.target.value)}
+                                        className="form-select"
+                                        style={{ width: '100%' }}
+                                    >
+                                        <option value="">Default Sorting</option>
+                                        <option value="price_asc">Price: Low to High</option>
+                                        <option value="price_desc">Price: High to Low</option>
+                                        <option value="newest">Newest Arrivals</option>
+                                        <option value="top_rated">Top Rated</option>
+                                    </select>
+                                </div>
+
+                                {/* Price Filter */}
+                                <div style={{ flex: '1 1 300px' }}>
+                                    <h4 style={{ marginBottom: '0.8rem', fontSize: '0.95rem', color: 'var(--text-primary)', fontWeight: '600' }}>Price Range</h4>
+                                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                                        <input
+                                            type="number"
+                                            placeholder="Min $"
+                                            value={minPrice}
+                                            onChange={(e) => setMinPrice(e.target.value)}
+                                            className="form-input"
+                                            style={{ flex: 1 }}
+                                        />
+                                        <span style={{ color: 'var(--text-secondary)' }}>to</span>
+                                        <input
+                                            type="number"
+                                            placeholder="Max $"
+                                            value={maxPrice}
+                                            onChange={(e) => setMaxPrice(e.target.value)}
+                                            className="form-input"
+                                            style={{ flex: 1 }}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
 
             <div className="products-grid">
