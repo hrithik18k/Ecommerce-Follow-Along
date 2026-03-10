@@ -3,6 +3,9 @@ import Card from "./card";
 
 const Home = ({ products }) => {
     const [selectedCategory, setSelectedCategory] = useState('All');
+    const [sortBy, setSortBy] = useState('');
+    const [minPrice, setMinPrice] = useState('');
+    const [maxPrice, setMaxPrice] = useState('');
 
     const categories = [
         'All',
@@ -16,9 +19,33 @@ const Home = ({ products }) => {
         'Other'
     ];
 
-    const filteredProducts = selectedCategory === 'All'
-        ? products
+    let filteredProducts = selectedCategory === 'All'
+        ? [...products]
         : products.filter(p => p.category === selectedCategory);
+
+    // Apply price filter
+    if (minPrice !== '') {
+        filteredProducts = filteredProducts.filter(p => p.price >= Number(minPrice));
+    }
+    if (maxPrice !== '') {
+        filteredProducts = filteredProducts.filter(p => p.price <= Number(maxPrice));
+    }
+
+    // Apply sorting
+    if (sortBy === 'price_asc') {
+        filteredProducts.sort((a, b) => a.price - b.price);
+    } else if (sortBy === 'price_desc') {
+        filteredProducts.sort((a, b) => b.price - a.price);
+    } else if (sortBy === 'newest') {
+        // Fallback to _id if createdAt is missing, as ObjectIds contain timestamps
+        filteredProducts.sort((a, b) => {
+            const dateA = a.createdAt ? new Date(a.createdAt) : new Date(parseInt(a._id.substring(0, 8), 16) * 1000);
+            const dateB = b.createdAt ? new Date(b.createdAt) : new Date(parseInt(b._id.substring(0, 8), 16) * 1000);
+            return dateB - dateA;
+        });
+    } else if (sortBy === 'top_rated') {
+        filteredProducts.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    }
 
     return (
         <div className="page-container">
@@ -59,6 +86,43 @@ const Home = ({ products }) => {
                         </button>
                     ))}
                 </div>
+
+                {/* Sort & Filter Controls (Client-side) */}
+                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center', marginBottom: '1rem' }}>
+                    <select
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                        className="form-input"
+                        style={{ width: 'auto', flex: '1 1 200px' }}
+                    >
+                        <option value="">Sort By...</option>
+                        <option value="price_asc">Price: Low to High</option>
+                        <option value="price_desc">Price: High to Low</option>
+                        <option value="newest">Newest Arrivals</option>
+                        <option value="top_rated">Top Rated</option>
+                    </select>
+
+                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flex: '1 1 300px' }}>
+                        <span style={{ color: 'var(--text-secondary)' }}>Price Range:</span>
+                        <input
+                            type="number"
+                            placeholder="Min $"
+                            value={minPrice}
+                            onChange={(e) => setMinPrice(e.target.value)}
+                            className="form-input"
+                            style={{ width: '100px' }}
+                        />
+                        <span style={{ color: 'var(--text-secondary)' }}>-</span>
+                        <input
+                            type="number"
+                            placeholder="Max $"
+                            value={maxPrice}
+                            onChange={(e) => setMaxPrice(e.target.value)}
+                            className="form-input"
+                            style={{ width: '100px' }}
+                        />
+                    </div>
+                </div>
             </div>
 
             <div className="products-grid">
@@ -72,6 +136,7 @@ const Home = ({ products }) => {
                                 description={prod.description}
                                 price={prod.price}
                                 showDetailsLink={true}
+                                fullProduct={prod}
                             />
                         </div>
                     ))

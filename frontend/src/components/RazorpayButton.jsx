@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const RazorpayButton = ({ totalPrice, cartItems, selectedAddress }) => {
+const RazorpayButton = ({ totalPrice, cartItems, selectedAddress, couponCode, discountAmount }) => {
     const navigate = useNavigate();
     const [razorpayLoaded, setRazorpayLoaded] = useState(false);
     const token = localStorage.getItem('token');
@@ -32,7 +32,7 @@ const RazorpayButton = ({ totalPrice, cartItems, selectedAddress }) => {
                 const paymentResult = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/orders/verify-payment`, response);
                 if (paymentResult.status === 200) {
                     await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/orders/place-order`, {
-                        products: cartItems, address: selectedAddress, totalPrice
+                        products: cartItems, address: selectedAddress, totalPrice, couponCode, discountAmount
                     }, { headers: { Authorization: `Bearer ${token}` } });
                     toast('Payment Successful');
                     navigate('/order-success');

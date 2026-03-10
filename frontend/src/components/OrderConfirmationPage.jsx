@@ -6,7 +6,7 @@ import RazorpayButton from './RazorpayButton';
 const OrderConfirmationPage = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const { cartItems, selectedAddress, totalPrice } = location.state;
+    const { cartItems, selectedAddress, totalPrice, couponCode, discountAmount } = location.state;
     const token = localStorage.getItem('token');
     const [paymentMethod, setPaymentMethod] = useState('COD');
     const [isPlacing, setIsPlacing] = useState(false);
@@ -15,7 +15,7 @@ const OrderConfirmationPage = () => {
         setIsPlacing(true);
         try {
             const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/orders/place-order`, {
-                products: cartItems, address: selectedAddress, totalPrice
+                products: cartItems, address: selectedAddress, totalPrice, couponCode, discountAmount
             }, { headers: { Authorization: `Bearer ${token}` } });
 
             if (response.status === 201) {
@@ -77,7 +77,7 @@ const OrderConfirmationPage = () => {
 
             <div style={{ marginTop: '1.5rem' }}>
                 {paymentMethod === 'ONLINE' ? (
-                    <RazorpayButton totalPrice={totalPrice} cartItems={cartItems} selectedAddress={selectedAddress} />
+                    <RazorpayButton totalPrice={totalPrice} cartItems={cartItems} selectedAddress={selectedAddress} couponCode={couponCode} discountAmount={discountAmount} />
                 ) : (
                     <button onClick={handlePlaceOrder} className="btn btn-primary btn-full btn-lg" disabled={isPlacing}>
                         {isPlacing ? 'Placing Order...' : 'Place Order'}

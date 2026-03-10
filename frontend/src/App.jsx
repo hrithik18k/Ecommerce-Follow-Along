@@ -18,6 +18,12 @@ import OrderSuccessPage from './components/OrderSuccessPage';
 import MyOrdersPage from './components/MyOrdersPage';
 import AdminDashboard from './components/AdminDashboard';
 import SellerOrdersPage from './components/SellerOrdersPage';
+import SellerDashboard from './components/SellerDashboard';
+import SearchBar from './components/SearchBar';
+import SearchResultsPage from './components/SearchResultsPage';
+import ComparePage from './components/ComparePage';
+import CompareBar from './components/CompareBar';
+import NotificationsDropdown from './components/NotificationsDropdown';
 
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
@@ -89,10 +95,11 @@ function App() {
             <Toaster position="top-center" />
             {!isAuthPage && (
                 <nav className="navbar">
-                    <div className="navbar-left">
+                    <div className="navbar-left" style={{ display: 'flex', alignItems: 'center', gap: '2rem', flex: 1 }}>
                         <Link to="/">
-                            <h1 className="web-name">LuxeMart</h1>
+                            <h1 className="web-name" style={{ margin: 0 }}>LuxeMart</h1>
                         </Link>
+                        <SearchBar />
                     </div>
                     <div className="navbar-right">
                         <Link to="/" className={`nav-link ${location.pathname === '/' ? 'nav-link-active' : ''}`}>
@@ -107,6 +114,9 @@ function App() {
                                         </Link>
                                         <Link to="/my-products" className={`nav-link ${location.pathname === '/my-products' ? 'nav-link-active' : ''}`}>
                                             My Products
+                                        </Link>
+                                        <Link to="/seller-dashboard" className={`nav-link ${location.pathname === '/seller-dashboard' ? 'nav-link-active' : ''}`}>
+                                            Dashboard
                                         </Link>
                                     </>
                                 )}
@@ -133,6 +143,7 @@ function App() {
                                         <span className={getRoleBadgeClass(role)}>{role}</span>
                                     </Link>
                                 )}
+                                <NotificationsDropdown />
                                 <button onClick={handleLogout} className="logout-btn">
                                     Logout
                                 </button>
@@ -151,6 +162,7 @@ function App() {
             )}
             <Routes>
                 <Route path="/" element={<Home products={products} />} />
+                <Route path="/search" element={<SearchResultsPage />} />
                 <Route path="/create" element={<ProductForm setProducts={setProducts} />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<SignUp />} />
@@ -165,8 +177,11 @@ function App() {
                 <Route path="/order-success" element={<OrderSuccessPage />} />
                 <Route path="/my-orders" element={<MyOrdersPage />} />
                 <Route path="/seller-orders" element={<SellerOrdersPage />} />
+                <Route path="/seller-dashboard" element={<SellerDashboard />} />
                 <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/compare" element={<ComparePage />} />
             </Routes>
+            <CompareBar />
         </div>
     );
 }
