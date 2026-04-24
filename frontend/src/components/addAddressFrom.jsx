@@ -28,29 +28,29 @@ const AddAddressForm = () => {
                 <h2 className="form-card-title">Add New Address</h2>
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label className="form-label">Country</label>
-                        <input type="text" name="country" value={address.country} onChange={handleChange} required className="form-input" placeholder="e.g. India" />
+                        <label htmlFor="country" className="form-label">Country</label>
+                        <input id="country" type="text" name="country" value={address.country} onChange={handleChange} required className="form-input" placeholder="e.g. India" />
                     </div>
                     <div className="form-group">
-                        <label className="form-label">City</label>
-                        <input type="text" name="city" value={address.city} onChange={handleChange} required className="form-input" placeholder="e.g. Mumbai" />
+                        <label htmlFor="city" className="form-label">City</label>
+                        <input id="city" type="text" name="city" value={address.city} onChange={handleChange} required className="form-input" placeholder="e.g. Mumbai" />
                     </div>
                     <div className="form-group">
-                        <label className="form-label">Address Line 1</label>
-                        <input type="text" name="address1" value={address.address1} onChange={handleChange} required className="form-input" placeholder="Street address" />
+                        <label htmlFor="address1" className="form-label">Address Line 1</label>
+                        <input id="address1" type="text" name="address1" value={address.address1} onChange={handleChange} required className="form-input" placeholder="Street address" />
                     </div>
                     <div className="form-group">
-                        <label className="form-label">Address Line 2</label>
-                        <input type="text" name="address2" value={address.address2} onChange={handleChange} className="form-input" placeholder="Apartment, suite, etc. (optional)" />
+                        <label htmlFor="address2" className="form-label">Address Line 2</label>
+                        <input id="address2" type="text" name="address2" value={address.address2} onChange={handleChange} className="form-input" placeholder="Apartment, suite, etc. (optional)" />
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                         <div className="form-group">
-                            <label className="form-label">Zip Code</label>
-                            <input type="text" name="zipCode" value={address.zipCode} onChange={handleChange} required className="form-input" placeholder="e.g. 400001" />
+                            <label htmlFor="zipCode" className="form-label">Zip Code</label>
+                            <input id="zipCode" type="text" name="zipCode" value={address.zipCode} onChange={handleChange} required className="form-input" placeholder="e.g. 400001" />
                         </div>
                         <div className="form-group">
-                            <label className="form-label">Type</label>
-                            <select name="addressType" value={address.addressType} onChange={handleChange} required className="form-select">
+                            <label htmlFor="addressType" className="form-label">Type</label>
+                            <select id="addressType" name="addressType" value={address.addressType} onChange={handleChange} required className="form-select">
                                 <option value="">Select type</option>
                                 <option value="Home">Home</option>
                                 <option value="Office">Office</option>

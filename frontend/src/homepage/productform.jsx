@@ -2,6 +2,7 @@ import toast from 'react-hot-toast';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router';
+import PropTypes from 'prop-types';
 
 function ProductForm({ setProducts }) {
     const { id } = useParams();
@@ -104,16 +105,17 @@ function ProductForm({ setProducts }) {
                 </h2>
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label className="form-label">Product Name</label>
-                        <input type="text" value={name} onChange={(e) => setName(e.target.value)} required className="form-input" placeholder="Enter product name" />
+                        <label htmlFor="name" className="form-label">Product Name</label>
+                        <input id="name" type="text" value={name} onChange={(e) => setName(e.target.value)} required className="form-input" placeholder="Enter product name" />
                     </div>
                     <div className="form-group">
-                        <label className="form-label">Description</label>
-                        <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} required className="form-input" placeholder="Describe your product" />
+                        <label htmlFor="description" className="form-label">Description</label>
+                        <input id="description" type="text" value={description} onChange={(e) => setDescription(e.target.value)} required className="form-input" placeholder="Describe your product" />
                     </div>
                     <div className="form-group">
-                        <label className="form-label">Category</label>
+                        <label htmlFor="category" className="form-label">Category</label>
                         <select
+                            id="category"
                             value={category}
                             onChange={(e) => setCategory(e.target.value)}
                             required
@@ -127,17 +129,17 @@ function ProductForm({ setProducts }) {
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                         <div className="form-group">
-                            <label className="form-label">Price ($)</label>
-                            <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} required className="form-input" placeholder="0.00" />
+                            <label htmlFor="price" className="form-label">Price ($)</label>
+                            <input id="price" type="number" value={price} onChange={(e) => setPrice(e.target.value)} required className="form-input" placeholder="0.00" />
                         </div>
                         <div className="form-group">
-                            <label className="form-label">Stock</label>
-                            <input type="number" value={stock} onChange={(e) => setStock(e.target.value)} required className="form-input" placeholder="0" />
+                            <label htmlFor="stock" className="form-label">Stock</label>
+                            <input id="stock" type="number" value={stock} onChange={(e) => setStock(e.target.value)} required className="form-input" placeholder="0" />
                         </div>
                     </div>
                     <div className="form-group">
-                        <label className="form-label">Product Images</label>
-                        <input type="file" multiple onChange={handleImageChange} className="form-input-file" accept="image/*" />
+                        <label htmlFor="images" className="form-label">Product Images</label>
+                        <input id="images" type="file" multiple onChange={handleImageChange} className="form-input-file" accept="image/*" />
                     </div>
                     {(existingImages.length > 0 || images.length > 0) && (
                         <div className="image-preview-grid">
@@ -157,5 +159,8 @@ function ProductForm({ setProducts }) {
         </div>
     );
 }
+ProductForm.propTypes = {
+    setProducts: PropTypes.func.isRequired
+};
 
 export default ProductForm;

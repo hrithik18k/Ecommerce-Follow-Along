@@ -66,28 +66,28 @@ const SignUp = () => {
                 </div>
                 <form onSubmit={handleSubmit} className="auth-form">
                     <div className="form-group">
-                        <label className="form-label">Full Name</label>
-                        <input type="text" value={name} onChange={(e) => setName(e.target.value)} required className="form-input" placeholder="John Doe" />
+                        <label htmlFor="name" className="form-label">Full Name</label>
+                        <input id="name" type="text" value={name} onChange={(e) => setName(e.target.value)} required className="form-input" placeholder="John Doe" />
                     </div>
                     <div className="form-group">
-                        <label className="form-label">Email Address</label>
-                        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="form-input" placeholder="you@example.com" />
+                        <label htmlFor="email" className="form-label">Email Address</label>
+                        <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="form-input" placeholder="you@example.com" />
                     </div>
                     <div className="form-group">
-                        <label className="form-label">Password</label>
-                        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="form-input" placeholder="Enter your password" />
+                        <label htmlFor="password" className="form-label">Password</label>
+                        <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="form-input" placeholder="Enter your password" />
                     </div>
                     <div className="form-group">
-                        <label className="form-label">Register as</label>
-                        <select value={role} onChange={(e) => setRoleInput(e.target.value)} className="form-select">
+                        <label htmlFor="role" className="form-label">Register as</label>
+                        <select id="role" value={role} onChange={(e) => setRoleInput(e.target.value)} className="form-select">
                             <option value="buyer">Buyer</option>
                             <option value="seller">Seller</option>
                             <option value="admin">Admin</option>
                         </select>
                     </div>
                     <div className="form-group">
-                        <label className="form-label">Profile Picture</label>
-                        <input type="file" onChange={handleFileChange} className="form-input-file" accept="image/*" />
+                        <label htmlFor="profilePicture" className="form-label">Profile Picture</label>
+                        <input id="profilePicture" type="file" onChange={handleFileChange} className="form-input-file" accept="image/*" />
                     </div>
                     <button type="submit" className="btn btn-primary btn-full btn-lg" disabled={isLoading}>
                         {isLoading ? 'Creating...' : 'Create Account'}

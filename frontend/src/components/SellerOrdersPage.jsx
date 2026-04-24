@@ -91,8 +91,9 @@ const SellerOrdersPage = () => {
 
                         <div className="order-footer" style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1rem', marginTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div>
-                                <label style={{ marginRight: '0.5rem', fontSize: '0.85rem' }}>Update Status:</label>
+                                <label htmlFor={`status-${order._id}`} style={{ marginRight: '0.5rem', fontSize: '0.85rem' }}>Update Status:</label>
                                 <select
+                                    id={`status-${order._id}`}
                                     value={order.status}
                                     onChange={(e) => handleUpdateStatus(order._id, e.target.value)}
                                     className="form-input"
@@ -119,3 +120,4 @@ const SellerOrdersPage = () => {
 };
 
 export default SellerOrdersPage;
+

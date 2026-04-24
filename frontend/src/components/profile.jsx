@@ -105,16 +105,16 @@ const Profile = () => {
                     <h3 className="form-card-title">Edit Profile</h3>
                     <form onSubmit={handleEditProfile}>
                         <div className="form-group">
-                            <label className="form-label">Name</label>
-                            <input type="text" value={user.name} onChange={(e) => setUser({ ...user, name: e.target.value })} required className="form-input" />
+                            <label htmlFor="edit-name" className="form-label">Name</label>
+                            <input id="edit-name" type="text" value={user.name} onChange={(e) => setUser({ ...user, name: e.target.value })} required className="form-input" />
                         </div>
                         <div className="form-group">
-                            <label className="form-label">Email</label>
-                            <input type="email" value={user.email} onChange={(e) => setUser({ ...user, email: e.target.value })} required className="form-input" />
+                            <label htmlFor="edit-email" className="form-label">Email</label>
+                            <input id="edit-email" type="email" value={user.email} onChange={(e) => setUser({ ...user, email: e.target.value })} required className="form-input" />
                         </div>
                         <div className="form-group">
-                            <label className="form-label">Profile Picture</label>
-                            <input type="file" onChange={handleFileChange} className="form-input-file" accept="image/*" />
+                            <label htmlFor="edit-pic" className="form-label">Profile Picture</label>
+                            <input id="edit-pic" type="file" onChange={handleFileChange} className="form-input-file" accept="image/*" />
                         </div>
                         <button type="submit" className="btn btn-primary btn-full">Save Changes</button>
                     </form>
@@ -128,7 +128,7 @@ const Profile = () => {
                 </div>
                 {user.addresses && user.addresses.length > 0 ? (
                     user.addresses.map((address, index) => (
-                        <div key={index} className="address-card">
+                        <div key={address._id || index} className="address-card">
                             <div className="address-text">
                                 <strong>{address.addressType}</strong><br />
                                 {address.address1}, {address.address2 && `${address.address2}, `}
@@ -151,7 +151,7 @@ const Profile = () => {
                 {user.wishlist && user.wishlist.length > 0 ? (
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
                         {user.wishlist.map((item) => (
-                            <div key={item._id} style={{ border: '1px solid var(--border-color)', borderRadius: '10px', padding: '1rem', width: '200px', cursor: 'pointer', background: 'var(--card-bg)' }} onClick={() => navigate(`/product/${item._id}`)}>
+                            <div key={item._id} role="button" tabIndex="0" onKeyDown={(e) => { if(e.key === 'Enter' || e.key === ' ') navigate(`/product/${item._id}`); }} style={{ border: '1px solid var(--border-color)', borderRadius: '10px', padding: '1rem', width: '200px', cursor: 'pointer', background: 'var(--card-bg)' }} onClick={() => navigate(`/product/${item._id}`)}>
                                 <img src={item.imageUrl && item.imageUrl.length > 0 ? `${import.meta.env.VITE_BACKEND_URL}/${item.imageUrl[0]}` : ''} alt={item.name} style={{ width: '100%', height: '150px', objectFit: 'cover', borderRadius: '5px' }} />
                                 <h4 style={{ marginTop: '0.5rem', fontSize: '1.1rem', color: 'var(--text-color)' }}>{item.name}</h4>
                                 <p style={{ color: 'var(--primary-color)', fontWeight: 'bold' }}>${item.price.toFixed(2)}</p>

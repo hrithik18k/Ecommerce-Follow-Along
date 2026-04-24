@@ -75,7 +75,7 @@ const SearchBar = () => {
         const regex = new RegExp(`(${highlight})`, 'gi');
         const parts = text.split(regex);
         return parts.map((part, index) =>
-            regex.test(part) ? <span key={index} className="search-highlight">{part}</span> : part
+            regex.test(part) ? <span key={`${index}-${part}`} className="search-highlight">{part}</span> : part
         );
     };
 
@@ -117,6 +117,14 @@ const SearchBar = () => {
                                 {results.map((product) => (
                                     <li
                                         key={product._id}
+                                        role="button"
+                                        tabIndex="0"
+                                        onKeyDown={(e) => {
+                                            if(e.key === 'Enter' || e.key === ' ') {
+                                                setIsOpen(false);
+                                                navigate(`/product/${product._id}`);
+                                            }
+                                        }}
                                         className="search-result-item"
                                         onClick={() => {
                                             setIsOpen(false);
@@ -138,13 +146,21 @@ const SearchBar = () => {
                                 ))}
                             </ul>
                             <div
-                                className="search-see-all"
-                                onClick={() => {
-                                    setIsOpen(false);
-                                    navigate(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
-                                }}
-                            >
-                                See all results for "{searchTerm}"
+                                        className="search-see-all"
+                                        role="button"
+                                        tabIndex="0"
+                                        onKeyDown={(e) => {
+                                            if(e.key === 'Enter' || e.key === ' ') {
+                                                setIsOpen(false);
+                                                navigate(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
+                                            }
+                                        }}
+                                        onClick={() => {
+                                            setIsOpen(false);
+                                            navigate(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
+                                        }}
+                                    >
+                                        See all results for "{searchTerm}"
                             </div>
                         </>
                     ) : (

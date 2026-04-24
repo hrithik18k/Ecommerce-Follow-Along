@@ -57,11 +57,11 @@ const OrderConfirmationPage = () => {
             <div className="order-card">
                 <h3 style={{ color: '#fff', fontFamily: 'var(--font-display)', marginBottom: '1rem' }}>Payment Method</h3>
                 <div className="payment-options">
-                    <div className={`payment-option ${paymentMethod === 'COD' ? 'selected' : ''}`} onClick={() => setPaymentMethod('COD')}>
+                    <div role="button" tabIndex="0" onKeyDown={(e) => { if(e.key === 'Enter' || e.key === ' ') setPaymentMethod('COD'); }} className={`payment-option ${paymentMethod === 'COD' ? 'selected' : ''}`} onClick={() => setPaymentMethod('COD')}>
                         <input type="radio" value="COD" checked={paymentMethod === 'COD'} onChange={() => setPaymentMethod('COD')} />
                         <span className="payment-label">Cash on Delivery</span>
                     </div>
-                    <div className={`payment-option ${paymentMethod === 'ONLINE' ? 'selected' : ''}`} onClick={() => setPaymentMethod('ONLINE')}>
+                    <div role="button" tabIndex="0" onKeyDown={(e) => { if(e.key === 'Enter' || e.key === ' ') setPaymentMethod('ONLINE'); }} className={`payment-option ${paymentMethod === 'ONLINE' ? 'selected' : ''}`} onClick={() => setPaymentMethod('ONLINE')}>
                         <input type="radio" value="ONLINE" checked={paymentMethod === 'ONLINE'} onChange={() => setPaymentMethod('ONLINE')} />
                         <span className="payment-label">Online Payment</span>
                     </div>

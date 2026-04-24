@@ -1,5 +1,5 @@
 import './App.css';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Routes, useLocation, Link, useNavigate } from 'react-router-dom';
 import ProductForm from './homepage/productform';
 import { Toaster } from 'react-hot-toast';
 import { useEffect, useState } from 'react';
@@ -25,7 +25,7 @@ import ComparePage from './components/ComparePage';
 import CompareBar from './components/CompareBar';
 import NotificationsDropdown from './components/NotificationsDropdown';
 
-import { Link, useNavigate } from "react-router-dom";
+
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from './store/userSlice';
 
