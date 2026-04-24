@@ -2,6 +2,7 @@ import toast from 'react-hot-toast';
 import { useEffect, useState } from "react";
 import Card from "../homepage/card";
 import axios from 'axios';
+import PropTypes from 'prop-types';
 
 const MyProducts = ({ products }) => {
     const [myProducts, setMyProducts] = useState([]);
@@ -48,5 +49,9 @@ const MyProducts = ({ products }) => {
         </div>
     );
 }
+
+MyProducts.propTypes = {
+    products: PropTypes.array.isRequired
+};
 
 export default MyProducts;

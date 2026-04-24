@@ -39,7 +39,7 @@ const SelectAddressPage = () => {
             {addresses.length > 0 ? (
                 <div>
                     {addresses.map((address, index) => (
-                        <div key={index} className={`address-select-card ${selectedAddress === address ? 'selected' : ''}`} onClick={() => setSelectedAddress(address)}>
+                        <div key={address._id || index} role="button" tabIndex="0" onKeyDown={(e) => { if(e.key === 'Enter' || e.key === ' ') setSelectedAddress(address); }} className={`address-select-card ${selectedAddress === address ? 'selected' : ''}`} onClick={() => setSelectedAddress(address)}>
                             <input type="radio" name="address" className="address-radio" checked={selectedAddress === address} onChange={() => setSelectedAddress(address)} />
                             <div className="address-text">
                                 <strong>{address.addressType || 'Address'}</strong><br />

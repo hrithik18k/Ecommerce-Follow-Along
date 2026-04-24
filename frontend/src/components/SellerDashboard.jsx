@@ -11,7 +11,7 @@ const SellerDashboard = () => {
 
     const email = useSelector((state) => state.user.email);
     const role = useSelector((state) => state.user.role);
-    const token = useSelector((state) => state.user.token); // assuming token exists? Wait, the frontend might just use axios defaults or need manual token
+
     const navigate = useNavigate();
 
     useEffect(() => {

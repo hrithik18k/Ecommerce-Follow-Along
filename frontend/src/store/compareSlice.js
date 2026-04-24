@@ -13,12 +13,10 @@ const compareSlice = createSlice({
 
             if (existsIndex >= 0) {
                 state.selectedProducts.splice(existsIndex, 1);
+            } else if (state.selectedProducts.length >= 3) {
+                toast.error('You can only compare up to 3 products.');
             } else {
-                if (state.selectedProducts.length >= 3) {
-                    toast.error('You can only compare up to 3 products.');
-                } else {
-                    state.selectedProducts.push(product);
-                }
+                state.selectedProducts.push(product);
             }
         },
         removeCompareProduct: (state, action) => {

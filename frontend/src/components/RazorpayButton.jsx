@@ -2,6 +2,7 @@ import toast from 'react-hot-toast';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 const RazorpayButton = ({ totalPrice, cartItems, selectedAddress, couponCode, discountAmount }) => {
     const navigate = useNavigate();
@@ -57,6 +58,14 @@ const RazorpayButton = ({ totalPrice, cartItems, selectedAddress, couponCode, di
             Pay with Razorpay
         </button>
     );
+};
+
+RazorpayButton.propTypes = {
+    totalPrice: PropTypes.number.isRequired,
+    cartItems: PropTypes.array.isRequired,
+    selectedAddress: PropTypes.object.isRequired,
+    couponCode: PropTypes.string,
+    discountAmount: PropTypes.number
 };
 
 export default RazorpayButton;

@@ -2,7 +2,124 @@ import toast from 'react-hot-toast';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 import './AdminDashboard.css';
+
+const UserManagement = ({ users, handleRoleChange }) => (
+    <div className="users-management">
+        <div className="table-responsive">
+            <table className="admin-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {users.map(user => (
+                        <tr key={user._id}>
+                            <td>{user.name}</td>
+                            <td>{user.email}</td>
+                            <td>
+                                <select
+                                    className="role-select"
+                                    value={user.role}
+                                    onChange={(e) => handleRoleChange(user._id, e.target.value)}
+                                >
+                                    <option value="buyer">Buyer</option>
+                                    <option value="seller">Seller</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </td>
+                            <td>
+                                <button className="btn btn-sm" style={{ backgroundColor: 'var(--primary-color)' }}>Save</button>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    </div>
+);
+
+UserManagement.propTypes = {
+    users: PropTypes.array.isRequired,
+    handleRoleChange: PropTypes.func.isRequired
+};
+
+const CouponManagement = ({ coupons, newCoupon, setNewCoupon, handleCreateCoupon, handleToggleCoupon }) => (
+    <div className="coupons-management">
+        <div className="form-card" style={{ background: 'var(--surface)', padding: '1.5rem', borderRadius: 'var(--radius-lg)', marginBottom: '2rem', border: '1px solid var(--border)' }}>
+            <h3 style={{ marginBottom: '1rem' }}>Create New Coupon</h3>
+            <form onSubmit={handleCreateCoupon} style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
+                <div>
+                    <label htmlFor="coupon-code" style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Code</label>
+                    <input id="coupon-code" type="text" required value={newCoupon.code} onChange={(e) => setNewCoupon({ ...newCoupon, code: e.target.value })} className="form-input" style={{ width: '150px' }} />
+                </div>
+                <div>
+                    <label htmlFor="coupon-discount" style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Discount %</label>
+                    <input id="coupon-discount" type="number" required min="1" max="100" value={newCoupon.discountPercent} onChange={(e) => setNewCoupon({ ...newCoupon, discountPercent: e.target.value })} className="form-input" style={{ width: '100px' }} />
+                </div>
+                <div>
+                    <label htmlFor="coupon-maxUses" style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Max Uses</label>
+                    <input id="coupon-maxUses" type="number" required min="1" value={newCoupon.maxUses} onChange={(e) => setNewCoupon({ ...newCoupon, maxUses: e.target.value })} className="form-input" style={{ width: '100px' }} />
+                </div>
+                <div>
+                    <label htmlFor="coupon-expiresAt" style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Expiry Date</label>
+                    <input id="coupon-expiresAt" type="date" required value={newCoupon.expiresAt} onChange={(e) => setNewCoupon({ ...newCoupon, expiresAt: e.target.value })} className="form-input" />
+                </div>
+                <button type="submit" className="btn btn-primary">Create Coupon</button>
+            </form>
+        </div>
+
+        <div className="table-responsive">
+            <table className="admin-table">
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Discount</th>
+                        <th>Uses</th>
+                        <th>Expires At</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {coupons.map(coupon => (
+                        <tr key={coupon._id}>
+                            <td style={{ fontWeight: 'bold' }}>{coupon.code}</td>
+                            <td>{coupon.discountPercent}%</td>
+                            <td>{coupon.usedCount} / {coupon.maxUses}</td>
+                            <td>{new Date(coupon.expiresAt).toLocaleDateString()}</td>
+                            <td>{coupon.isActive ? <span style={{ color: 'var(--color-success)' }}>Active</span> : <span style={{ color: 'var(--color-danger)' }}>Inactive</span>}</td>
+                            <td>
+                                <button
+                                    className={`btn btn-sm ${coupon.isActive ? 'btn-danger' : 'btn-success'}`}
+                                    onClick={() => handleToggleCoupon(coupon._id)}
+                                >
+                                    {coupon.isActive ? 'Disable' : 'Enable'}
+                                </button>
+                            </td>
+                        </tr>
+                    ))}
+                    {coupons.length === 0 && (
+                        <tr><td colSpan="6" style={{ textAlign: 'center', padding: '1rem' }}>No coupons found.</td></tr>
+                    )}
+                </tbody>
+            </table>
+        </div>
+    </div>
+);
+
+CouponManagement.propTypes = {
+    coupons: PropTypes.array.isRequired,
+    newCoupon: PropTypes.object.isRequired,
+    setNewCoupon: PropTypes.func.isRequired,
+    handleCreateCoupon: PropTypes.func.isRequired,
+    handleToggleCoupon: PropTypes.func.isRequired
+};
 
 const AdminDashboard = () => {
     const [activeTab, setActiveTab] = useState('users');
@@ -134,109 +251,15 @@ const AdminDashboard = () => {
             </div>
 
             {activeTab === 'users' && (
-                <div className="users-management">
-                    <div className="table-responsive">
-                        <table className="admin-table">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Role</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {users.map(user => (
-                                    <tr key={user._id}>
-                                        <td>{user.name}</td>
-                                        <td>{user.email}</td>
-                                        <td>
-                                            <select
-                                                className="role-select"
-                                                value={user.role}
-                                                onChange={(e) => handleRoleChange(user._id, e.target.value)}
-                                            >
-                                                <option value="buyer">Buyer</option>
-                                                <option value="seller">Seller</option>
-                                                <option value="admin">Admin</option>
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <button className="btn btn-sm" style={{ backgroundColor: 'var(--primary-color)' }}>Save</button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                <UserManagement users={users} handleRoleChange={handleRoleChange} />
             )}
 
             {activeTab === 'coupons' && (
-                <div className="coupons-management">
-                    <div className="form-card" style={{ background: 'var(--surface)', padding: '1.5rem', borderRadius: 'var(--radius-lg)', marginBottom: '2rem', border: '1px solid var(--border)' }}>
-                        <h3 style={{ marginBottom: '1rem' }}>Create New Coupon</h3>
-                        <form onSubmit={handleCreateCoupon} style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Code</label>
-                                <input type="text" required value={newCoupon.code} onChange={(e) => setNewCoupon({ ...newCoupon, code: e.target.value })} className="form-input" style={{ width: '150px' }} />
-                            </div>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Discount %</label>
-                                <input type="number" required min="1" max="100" value={newCoupon.discountPercent} onChange={(e) => setNewCoupon({ ...newCoupon, discountPercent: e.target.value })} className="form-input" style={{ width: '100px' }} />
-                            </div>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Max Uses</label>
-                                <input type="number" required min="1" value={newCoupon.maxUses} onChange={(e) => setNewCoupon({ ...newCoupon, maxUses: e.target.value })} className="form-input" style={{ width: '100px' }} />
-                            </div>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Expiry Date</label>
-                                <input type="date" required value={newCoupon.expiresAt} onChange={(e) => setNewCoupon({ ...newCoupon, expiresAt: e.target.value })} className="form-input" />
-                            </div>
-                            <button type="submit" className="btn btn-primary">Create Coupon</button>
-                        </form>
-                    </div>
-
-                    <div className="table-responsive">
-                        <table className="admin-table">
-                            <thead>
-                                <tr>
-                                    <th>Code</th>
-                                    <th>Discount</th>
-                                    <th>Uses</th>
-                                    <th>Expires At</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {coupons.map(coupon => (
-                                    <tr key={coupon._id}>
-                                        <td style={{ fontWeight: 'bold' }}>{coupon.code}</td>
-                                        <td>{coupon.discountPercent}%</td>
-                                        <td>{coupon.usedCount} / {coupon.maxUses}</td>
-                                        <td>{new Date(coupon.expiresAt).toLocaleDateString()}</td>
-                                        <td>{coupon.isActive ? <span style={{ color: 'var(--color-success)' }}>Active</span> : <span style={{ color: 'var(--color-danger)' }}>Inactive</span>}</td>
-                                        <td>
-                                            <button
-                                                className={`btn btn-sm ${coupon.isActive ? 'btn-danger' : 'btn-success'}`}
-                                                onClick={() => handleToggleCoupon(coupon._id)}
-                                            >
-                                                {coupon.isActive ? 'Disable' : 'Enable'}
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                                {coupons.length === 0 && (
-                                    <tr><td colSpan="6" style={{ textAlign: 'center', padding: '1rem' }}>No coupons found.</td></tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                <CouponManagement coupons={coupons} newCoupon={newCoupon} setNewCoupon={setNewCoupon} handleCreateCoupon={handleCreateCoupon} handleToggleCoupon={handleToggleCoupon} />
             )}
         </div>
     );
 };
 
 export default AdminDashboard
+
